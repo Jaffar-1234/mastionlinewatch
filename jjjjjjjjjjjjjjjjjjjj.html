@@ -1,0 +1,3064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WatchMasti - Movies & Dramas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vidstack/player@1.11.0/dist/theme.css" />
+    <style>
+        /* ===== CSS VARIABLES & RESET ===== */
+        :root {
+            --netflix-red: #e50914;
+            --netflix-red-dark: #b20710;
+            --netflix-black: #141414;
+            --netflix-dark: #1a1a2e;
+            --netflix-card: #18181b;
+            --netflix-card-hover: #2a2a3a;
+            --netflix-text: #ffffff;
+            --netflix-text-secondary: #b3b3b3;
+            --netflix-text-muted: #6b6b7b;
+            --netflix-border: rgba(255, 255, 255, 0.06);
+            --netflix-gradient: linear-gradient(135deg, #e50914, #ff6b6b);
+            --netflix-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --netflix-radius: 8px;
+            --netflix-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Inter', sans-serif;
+            --sidebar-width: 240px;
+            --header-height: 68px;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--netflix-black);
+            color: var(--netflix-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            font-family: var(--font);
+            border: none;
+            outline: none;
+        }
+        input,
+        textarea,
+        select {
+            font-family: var(--font);
+            outline: none;
+            border: none;
+        }
+        img {
+            display: block;
+            max-width: 100%;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--netflix-black);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--netflix-red);
+            border-radius: 10px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+            transition: var(--netflix-transition);
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--netflix-text);
+            border: none;
+        }
+        .btn-primary {
+            background: var(--netflix-red);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--netflix-red-dark);
+            transform: scale(1.02);
+        }
+        .btn-outline {
+            border: 2px solid var(--netflix-red);
+            color: var(--netflix-text);
+            background: transparent;
+        }
+        .btn-outline:hover {
+            background: var(--netflix-red);
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .btn-sm {
+            padding: 4px 12px;
+            font-size: 11px;
+        }
+        .btn-xs {
+            padding: 2px 10px;
+            font-size: 10px;
+            border-radius: 3px;
+        }
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-success {
+            background: #25D366;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #1da851;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .badge-movie {
+            background: var(--netflix-red);
+            color: #fff;
+        }
+        .badge-drama {
+            background: #6c5ce7;
+            color: #fff;
+        }
+        .badge-embed {
+            background: #17a2b8;
+            color: #fff;
+        }
+        .badge-trending {
+            background: #fdcb6e;
+            color: #000;
+        }
+        .badge-trailer {
+            background: #e17055;
+            color: #fff;
+        }
+        .badge-family {
+            background: #00b894;
+            color: #fff;
+        }
+        .badge-cartoon {
+            background: #fdcb6e;
+            color: #000;
+        }
+        .badge-upcoming {
+            background: #0984e3;
+            color: #fff;
+        }
+        .badge-hollywood {
+            background: #6c5ce7;
+            color: #fff;
+        }
+        .badge-bollywood {
+            background: #e50914;
+            color: #fff;
+        }
+        .badge-pakistan {
+            background: #00b894;
+            color: #fff;
+        }
+        .badge-indian {
+            background: #fdcb6e;
+            color: #000;
+        }
+        .badge-saudi-drama {
+            background: #e17055;
+            color: #fff;
+        }
+        .badge-saudi-movies {
+            background: #0984e3;
+            color: #fff;
+        }
+        .badge-unlimited {
+            background: #fd79a8;
+            color: #fff;
+        }
+        .badge-size {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--netflix-text-secondary);
+            font-weight: 400;
+        }
+        .badge-1280 {
+            background: rgba(229, 9, 20, 0.2);
+            color: var(--netflix-red);
+            font-weight: 600;
+            border: 1px solid var(--netflix-red);
+        }
+
+        /* ===== SIDEBAR & LAYOUT ===== */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: rgba(20, 20, 20, 0.98);
+            border-right: 1px solid var(--netflix-border);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, visibility 0.3s ease, opacity 0.3s ease;
+            overflow-y: auto;
+            backdrop-filter: blur(12px);
+            transform: translateX(-100%);
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .sidebar.open {
+            transform: translateX(0);
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .admin-mode .sidebar {
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .admin-mode .sidebar.open {
+            transform: translateX(0);
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 3px;
+        }
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--netflix-border);
+            min-height: var(--header-height);
+        }
+        .sidebar-brand .brand-icon {
+            font-size: 28px;
+            color: var(--netflix-red);
+        }
+        .sidebar-brand .brand-text {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--netflix-red);
+            letter-spacing: -0.5px;
+        }
+        .sidebar-brand .brand-sub {
+            font-size: 9px;
+            color: var(--netflix-text-muted);
+            font-weight: 400;
+            display: block;
+            margin-top: -2px;
+            letter-spacing: 0.5px;
+        }
+        .sidebar-menu {
+            flex: 1;
+            padding: 12px 10px;
+        }
+        .sidebar-menu .menu-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--netflix-text-muted);
+            padding: 10px 12px 6px;
+            font-weight: 600;
+        }
+        .sidebar-menu .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            color: var(--netflix-text-secondary);
+            transition: var(--netflix-transition);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 2px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+        .sidebar-menu .menu-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--netflix-text);
+        }
+        .sidebar-menu .menu-item.active {
+            background: var(--netflix-red);
+            color: #fff;
+        }
+        .sidebar-menu .menu-item i {
+            width: 20px;
+            font-size: 16px;
+        }
+        .sidebar-menu .menu-item .badge-count {
+            margin-left: auto;
+            background: var(--netflix-red);
+            color: #fff;
+            font-size: 10px;
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+        .sidebar-menu .menu-item .cat-badge {
+            margin-left: auto;
+            font-size: 9px;
+            padding: 1px 6px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--netflix-text-muted);
+        }
+        .sidebar-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--netflix-border);
+        }
+        .sidebar-footer .user-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar-footer .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--netflix-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: #fff;
+        }
+        .sidebar-footer .user-info .name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .sidebar-footer .user-info .role {
+            font-size: 11px;
+            color: var(--netflix-text-muted);
+        }
+        .main-content {
+            flex: 1;
+            min-height: 100vh;
+            padding: 0;
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
+        }
+        .main-content.shifted {
+            margin-left: var(--sidebar-width);
+        }
+        .main-header {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: rgba(20, 20, 20, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--netflix-border);
+            padding: 0 16px;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .main-header .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            overflow: hidden;
+        }
+        .main-header .header-left .sidebar-toggle {
+            display: none;
+            background: none;
+            color: var(--netflix-text);
+            font-size: 20px;
+            padding: 4px;
+            flex-shrink: 0;
+        }
+        .main-header .header-left .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            overflow: hidden;
+            min-width: 0;
+        }
+        .main-header .header-left .brand i {
+            font-size: 28px;
+            color: var(--netflix-red);
+            flex-shrink: 0;
+        }
+        .brand-ticker {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            height: 24px;
+            display: flex;
+            align-items: center;
+        }
+        .brand-ticker span {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: ticker 12s linear infinite;
+            font-size: 18px;
+            font-weight: 900;
+            background: var(--netflix-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+        }
+        @keyframes ticker {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        .brand-ticker:hover span {
+            animation-play-state: paused;
+        }
+        .main-header .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .main-header .header-right .header-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--netflix-text-secondary);
+            font-size: 16px;
+            transition: var(--netflix-transition);
+            border: none;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .main-header .header-right .header-btn:hover {
+            background: var(--netflix-red);
+            color: #fff;
+        }
+        .main-header .header-right .admin-badge {
+            background: var(--netflix-red);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 10px;
+            display: none;
+        }
+        .brand-ticker {
+            display: none !important;
+        }
+        .main-header .header-left .brand i {
+            font-size: 28px;
+            color: var(--netflix-red);
+            flex-shrink: 0;
+        }
+        .main-header .header-left .brand {
+            gap: 6px;
+        }
+        @media (max-width:768px) {
+            .admin-mode .main-header .header-left .sidebar-toggle {
+                display: flex;
+            }
+            .main-header {
+                padding: 0 12px;
+            }
+            .main-header .header-right .header-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+        }
+
+        /* ===== PUBLIC DASHBOARD ===== */
+        .public-content {
+            padding: 0 0 40px 0;
+        }
+        .hero-banner {
+            position: relative;
+            min-height: 380px;
+            padding: 60px 48px 40px;
+            display: flex;
+            align-items: flex-end;
+            margin-bottom: 32px;
+            border-bottom: 1px solid var(--netflix-border);
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: radial-gradient(ellipse at center right, rgba(229, 9, 20, 0.25), transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .hero-banner .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+        }
+        .hero-banner .hero-content .hero-badge {
+            display: inline-block;
+            background: var(--netflix-red);
+            color: #fff;
+            padding: 2px 14px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        .hero-banner .hero-content h1 {
+            font-size: 42px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 8px;
+        }
+        .hero-banner .hero-content h1 span {
+            background: var(--netflix-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-banner .hero-content p {
+            font-size: 16px;
+            color: var(--netflix-text-secondary);
+            max-width: 450px;
+            line-height: 1.6;
+        }
+        .hero-banner .hero-content .hero-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .hero-banner .hero-content .hero-stats .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--netflix-text-secondary);
+            font-size: 13px;
+        }
+        .hero-banner .hero-content .hero-stats .stat i {
+            color: var(--netflix-red);
+        }
+        .hero-banner .hero-content .hero-stats .stat strong {
+            color: #fff;
+            font-size: 18px;
+        }
+
+        /* Category filter tabs on dashboard */
+        .category-tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            padding: 0 24px;
+        }
+        .category-tabs .cat-tab {
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--netflix-text-secondary);
+            border: 1px solid transparent;
+            transition: var(--netflix-transition);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .category-tabs .cat-tab:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+        .category-tabs .cat-tab.active {
+            background: var(--netflix-red);
+            color: #fff;
+            border-color: var(--netflix-red);
+        }
+        .category-tabs .cat-tab i {
+            margin-right: 4px;
+            font-size: 11px;
+        }
+        .category-tabs .cat-tab .count {
+            font-weight: 400;
+            font-size: 10px;
+            opacity: 0.7;
+            margin-left: 4px;
+        }
+
+        .section-row {
+            margin-bottom: 32px;
+            padding: 0 24px;
+        }
+        .section-row .row-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .section-row .row-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-row .row-header h3 i {
+            color: var(--netflix-red);
+            font-size: 18px;
+        }
+        .section-row .row-header .count-badge {
+            font-size: 13px;
+            color: var(--netflix-text-muted);
+            background: rgba(255, 255, 255, 0.06);
+            padding: 2px 14px;
+            border-radius: 12px;
+        }
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 4px 0 12px 0;
+        }
+
+        /* ===== MOVIE CARD ===== */
+        .movie-card {
+            background: var(--netflix-card);
+            border-radius: var(--netflix-radius);
+            overflow: hidden;
+            transition: var(--netflix-transition);
+            cursor: pointer;
+            position: relative;
+            border: 1px solid transparent;
+        }
+        .movie-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            z-index: 10;
+            border-color: var(--netflix-red);
+            box-shadow: var(--netflix-shadow);
+        }
+        .movie-card .card-thumb {
+            position: relative;
+            background: var(--netflix-dark);
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+        }
+        .movie-card .card-thumb img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--netflix-transition);
+        }
+        .movie-card:hover .card-thumb img {
+            transform: scale(1.08);
+        }
+        .movie-card .card-thumb .play-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: var(--netflix-transition);
+        }
+        .movie-card:hover .card-thumb .play-overlay {
+            opacity: 1;
+        }
+        .movie-card .card-thumb .play-overlay i {
+            font-size: 40px;
+            color: #fff;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+        }
+        .movie-card .card-thumb .card-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 2;
+        }
+        .movie-card .card-thumb .card-embed-badge {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(23, 162, 184, 0.85);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 9px;
+            color: #fff;
+            font-weight: 600;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+        .movie-card .card-thumb .card-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            color: #fff;
+        }
+        .movie-card .card-body {
+            padding: 10px 12px 12px;
+        }
+        .movie-card .card-body h4 {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .movie-card .card-body .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--netflix-text-secondary);
+            margin-top: 2px;
+            flex-wrap: wrap;
+        }
+        .movie-card .card-body .card-meta i {
+            font-size: 10px;
+        }
+        .movie-card .card-body .card-meta .size-badge {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            color: var(--netflix-text-muted);
+        }
+        .movie-card .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 5;
+        }
+        .movie-card .progress-bar .fill {
+            height: 100%;
+            background: var(--netflix-red);
+            transition: width 0.3s ease;
+        }
+        .movie-card .card-admin-actions {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            display: flex;
+            gap: 4px;
+            z-index: 3;
+            opacity: 0;
+            transition: var(--netflix-transition);
+        }
+        .movie-card:hover .card-admin-actions {
+            opacity: 1;
+        }
+        .movie-card .card-admin-actions .admin-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border: none;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--netflix-transition);
+        }
+        .movie-card .card-admin-actions .admin-btn:hover {
+            transform: scale(1.1);
+        }
+        .movie-card .card-admin-actions .admin-btn.delete:hover {
+            background: #dc3545;
+        }
+        .movie-card .card-admin-actions .admin-btn.edit:hover {
+            background: var(--netflix-red);
+        }
+        .movie-card .card-actions {
+            display: none;
+            gap: 4px;
+            padding: 4px 12px 12px;
+            border-top: 1px solid var(--netflix-border);
+        }
+        .movie-card .card-actions .btn {
+            flex: 1;
+            justify-content: center;
+            font-size: 10px;
+            padding: 4px 6px;
+        }
+        .admin-mode .movie-card .card-admin-actions {
+            opacity: 1 !important;
+        }
+        .admin-mode .movie-card .card-actions {
+            display: flex !important;
+        }
+
+        /* ===== ADMIN PANEL ===== */
+        .admin-pages {
+            display: none;
+            padding: 0 24px 40px;
+        }
+        .admin-pages.active {
+            display: block;
+        }
+        .content-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .content-toolbar .filter-group {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .content-toolbar .filter-group .filter-btn {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--netflix-text-secondary);
+            transition: var(--netflix-transition);
+            border: none;
+        }
+        .content-toolbar .filter-group .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+        .content-toolbar .filter-group .filter-btn.active {
+            background: var(--netflix-red);
+            color: #fff;
+        }
+        .content-toolbar .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 4px 16px;
+            border: 1px solid transparent;
+            transition: var(--netflix-transition);
+            margin-left: auto;
+        }
+        .content-toolbar .search-box:focus-within {
+            border-color: var(--netflix-red);
+        }
+        .content-toolbar .search-box input {
+            background: transparent;
+            padding: 8px 4px;
+            color: #fff;
+            width: 160px;
+            font-size: 13px;
+        }
+        .content-toolbar .search-box input::placeholder {
+            color: var(--netflix-text-muted);
+        }
+        .content-toolbar .search-box i {
+            color: var(--netflix-text-muted);
+        }
+        .table-wrap {
+            overflow-x: auto;
+            background: var(--netflix-card);
+            border-radius: var(--netflix-radius);
+            border: 1px solid var(--netflix-border);
+        }
+        .table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .table-wrap table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: var(--netflix-text-muted);
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--netflix-border);
+        }
+        .table-wrap table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--netflix-border);
+            color: var(--netflix-text-secondary);
+        }
+        .table-wrap table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .table-wrap table .content-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .table-wrap table .content-cell .thumb {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            object-fit: cover;
+            background: var(--netflix-dark);
+        }
+        .table-wrap table .content-cell .title {
+            font-weight: 500;
+            color: var(--netflix-text);
+        }
+
+        /* ===== UPLOAD FORM ===== */
+        .upload-form-container {
+            max-width: 820px;
+            background: var(--netflix-card);
+            border-radius: var(--netflix-radius);
+            padding: 32px;
+            border: 1px solid var(--netflix-border);
+        }
+        .upload-form-container .form-group {
+            margin-bottom: 18px;
+        }
+        .upload-form-container .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: var(--netflix-text-secondary);
+        }
+        .upload-form-container .form-group label .required {
+            color: var(--netflix-red);
+        }
+        .upload-form-container .form-group input,
+        .upload-form-container .form-group textarea,
+        .upload-form-container .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            font-size: 14px;
+            border: 1px solid var(--netflix-border);
+            transition: var(--netflix-transition);
+        }
+        .upload-form-container .form-group input:focus,
+        .upload-form-container .form-group textarea:focus,
+        .upload-form-container .form-group select:focus {
+            border-color: var(--netflix-red);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .upload-form-container .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .upload-form-container .form-group select option {
+            background: var(--netflix-black);
+            color: #fff;
+        }
+        .upload-form-container .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .upload-form-container .form-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 16px 0;
+            color: var(--netflix-text-muted);
+            font-size: 13px;
+        }
+        .upload-form-container .form-divider::before,
+        .upload-form-container .form-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--netflix-border);
+        }
+        .thumbnail-upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed var(--netflix-border);
+            border-radius: 6px;
+            transition: var(--netflix-transition);
+            cursor: pointer;
+        }
+        .thumbnail-upload-area:hover {
+            border-color: var(--netflix-red);
+            background: rgba(229, 9, 20, 0.04);
+        }
+        .thumbnail-upload-area .preview {
+            width: 100%;
+            max-height: 180px;
+            border-radius: 4px;
+            overflow: hidden;
+            display: none;
+            background: var(--netflix-dark);
+        }
+        .thumbnail-upload-area .preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .thumbnail-upload-area .placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--netflix-text-muted);
+            font-size: 13px;
+        }
+        .thumbnail-upload-area .placeholder i {
+            font-size: 32px;
+            color: var(--netflix-red);
+        }
+        .thumbnail-upload-area .thumb-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .thumbnail-upload-area .thumb-actions .btn-upload-thumb {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: var(--netflix-transition);
+            border: none;
+        }
+        .thumbnail-upload-area .thumb-actions .btn-upload-thumb:hover {
+            background: var(--netflix-red);
+        }
+        .thumbnail-upload-area .thumb-actions .remove-thumb {
+            background: none;
+            color: var(--netflix-text-muted);
+            font-size: 13px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            transition: var(--netflix-transition);
+            border: none;
+        }
+        .thumbnail-upload-area .thumb-actions .remove-thumb:hover {
+            color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+        .thumbnail-upload-area .thumb-url-input {
+            width: 100%;
+            margin-top: 4px;
+        }
+        .thumbnail-upload-area .thumb-url-input input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            border: 1px solid var(--netflix-border);
+            font-size: 13px;
+            transition: var(--netflix-transition);
+        }
+        .thumbnail-upload-area .thumb-url-input input:focus {
+            border-color: var(--netflix-red);
+        }
+        .image-size-info {
+            font-size: 11px;
+            color: var(--netflix-text-muted);
+            margin-top: 4px;
+        }
+        .image-size-info i {
+            color: var(--netflix-red);
+        }
+        .image-size-info.success {
+            color: #28a745;
+        }
+        .image-size-info.error {
+            color: #dc3545;
+        }
+        .form-hint {
+            font-size: 12px;
+            color: var(--netflix-text-muted);
+            margin-top: 4px;
+        }
+        .form-hint i {
+            color: var(--netflix-red);
+        }
+        .form-hint .fixed-ratio {
+            color: var(--netflix-red);
+            font-weight: 600;
+            background: rgba(229, 9, 20, 0.1);
+            padding: 2px 10px;
+            border-radius: 4px;
+        }
+
+        /* ===== VIDEO PLAYER PAGE ===== */
+        .video-player-page {
+            display: none;
+            padding: 0 24px 40px;
+            animation: fadeIn 0.4s ease;
+        }
+        .video-player-page.active {
+            display: block;
+        }
+        .video-player-page .back-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0 20px 0;
+            border-bottom: 1px solid var(--netflix-border);
+            margin-bottom: 20px;
+        }
+        .video-player-page .back-bar .back-btn {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--netflix-text);
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: var(--netflix-transition);
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .video-player-page .back-bar .back-btn:hover {
+            background: var(--netflix-red);
+        }
+        .video-player-page .back-bar .video-title {
+            font-size: 20px;
+            font-weight: 700;
+            flex: 1;
+        }
+        .video-player-page .players-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .video-player-page .players-grid .player-col {
+            background: #0a0a0a;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--netflix-border);
+        }
+        .video-player-page .players-grid .player-col .player-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--netflix-text-muted);
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid var(--netflix-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .video-player-page .players-grid .player-col .player-label i {
+            color: var(--netflix-red);
+        }
+        .video-player-page .players-grid .player-col .video-container {
+            position: relative;
+            background: #000;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+        }
+        .video-player-page .players-grid .player-col .video-container>* {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .video-player-page .players-grid .player-col .video-container .embed-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a0a;
+            width: 100%;
+            height: 100%;
+        }
+        .video-player-page .players-grid .player-col .video-container .embed-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .video-player-page .players-grid .player-col .no-source {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 30px 20px;
+            color: var(--netflix-text-muted);
+            font-size: 13px;
+            text-align: center;
+            min-height: 160px;
+            background: #0a0a0a;
+            height: 100%;
+        }
+        .video-player-page .players-grid .player-col .no-source i {
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: var(--netflix-text-muted);
+            opacity: 0.4;
+        }
+        .video-player-page .video-info {
+            padding: 8px 0;
+        }
+        .video-player-page .video-info h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .video-player-page .video-info .meta {
+            color: var(--netflix-text-secondary);
+            font-size: 13px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .video-player-page .video-info .meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .video-player-page .video-info .meta .size-tag {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 1px 10px;
+            border-radius: 10px;
+        }
+        .video-player-page .video-info .description {
+            color: var(--netflix-text-secondary);
+            margin-top: 10px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        .video-player-page .video-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .video-player-page .video-actions .btn {
+            font-size: 12px;
+        }
+        @media (max-width:768px) {
+            .video-player-page .players-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .video-player-page {
+                padding: 0 12px 24px;
+            }
+            .video-player-page .back-bar .video-title {
+                font-size: 16px;
+            }
+        }
+
+        /* ===== AUTH MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal-overlay .modal {
+            background: var(--netflix-card);
+            border-radius: var(--netflix-radius);
+            max-width: 400px;
+            width: 100%;
+            max-height: 95vh;
+            overflow-y: auto;
+            padding: 0;
+            animation: slideUp 0.3s ease;
+            border: 1px solid var(--netflix-border);
+        }
+        .modal-overlay .modal .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--netflix-border);
+            position: sticky;
+            top: 0;
+            background: var(--netflix-card);
+            z-index: 2;
+            border-radius: var(--netflix-radius) var(--netflix-radius) 0 0;
+        }
+        .modal-overlay .modal .modal-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .modal-overlay .modal .modal-header .close-btn {
+            background: none;
+            color: var(--netflix-text-secondary);
+            font-size: 24px;
+            transition: var(--netflix-transition);
+            padding: 0 4px;
+        }
+        .modal-overlay .modal .modal-header .close-btn:hover {
+            color: #fff;
+            transform: rotate(90deg);
+        }
+        .modal-overlay .modal .modal-body {
+            padding: 24px;
+        }
+        .auth-modal .modal .modal-body .auth-error {
+            background: rgba(220, 53, 69, 0.15);
+            color: #dc3545;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: none;
+        }
+        .auth-modal .modal .modal-body .auth-error.show {
+            display: block;
+        }
+        .auth-modal .modal .modal-body .auth-admin-only {
+            text-align: center;
+            font-size: 12px;
+            color: var(--netflix-text-muted);
+            margin-top: 12px;
+            padding: 8px 12px;
+            background: rgba(229, 9, 20, 0.06);
+            border-radius: 4px;
+            border: 1px solid rgba(229, 9, 20, 0.1);
+        }
+        .auth-modal .modal .modal-body .auth-admin-only i {
+            color: var(--netflix-red);
+            margin-right: 4px;
+        }
+        .auth-modal .modal .modal-body .form-group {
+            margin-bottom: 14px;
+        }
+        .auth-modal .modal .modal-body .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: var(--netflix-text-secondary);
+        }
+        .auth-modal .modal .modal-body .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            border: 1px solid var(--netflix-border);
+            font-size: 14px;
+            transition: var(--netflix-transition);
+        }
+        .auth-modal .modal .modal-body .form-group input:focus {
+            border-color: var(--netflix-red);
+        }
+
+        /* ===== TOASTS ===== */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 380px;
+            width: 100%;
+        }
+        .toast {
+            background: var(--netflix-card);
+            padding: 14px 20px;
+            border-radius: var(--netflix-radius);
+            border-left: 4px solid var(--netflix-red);
+            box-shadow: var(--netflix-shadow);
+            animation: slideUp 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            border: 1px solid var(--netflix-border);
+        }
+        .toast.success {
+            border-left-color: #28a745;
+        }
+        .toast.error {
+            border-left-color: #dc3545;
+        }
+        .toast.info {
+            border-left-color: #17a2b8;
+        }
+        .toast i {
+            font-size: 18px;
+        }
+        .toast.success i {
+            color: #28a745;
+        }
+        .toast.error i {
+            color: #dc3545;
+        }
+        .toast.info i {
+            color: #17a2b8;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width:1024px) {
+            .hero-banner {
+                min-height: 320px;
+                padding: 40px 32px 32px;
+            }
+            .hero-banner .hero-content h1 {
+                font-size: 32px;
+            }
+            .content-grid {
+                grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+                gap: 16px;
+            }
+            .category-tabs {
+                padding: 0 12px;
+            }
+            .category-tabs .cat-tab {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+        }
+        @media (max-width:768px) {
+            .hero-banner {
+                min-height: 260px;
+                padding: 30px 20px 24px;
+                margin-bottom: 20px;
+            }
+            .hero-banner .hero-content h1 {
+                font-size: 26px;
+            }
+            .hero-banner .hero-content p {
+                font-size: 14px;
+            }
+            .hero-banner .hero-content .hero-stats .stat strong {
+                font-size: 15px;
+            }
+            .section-row {
+                padding: 0 12px;
+                margin-bottom: 24px;
+            }
+            .section-row .row-header h3 {
+                font-size: 17px;
+            }
+            .content-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 12px;
+            }
+            .content-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .content-toolbar .search-box {
+                margin-left: 0;
+                width: 100%;
+            }
+            .content-toolbar .search-box input {
+                width: 100%;
+            }
+            .upload-form-container .form-row {
+                grid-template-columns: 1fr;
+            }
+            .upload-form-container {
+                padding: 20px;
+            }
+            .admin-pages {
+                padding: 0 12px 24px;
+            }
+            .table-wrap table {
+                font-size: 12px;
+            }
+            .table-wrap table td,
+            .table-wrap table th {
+                padding: 6px 8px;
+            }
+            .auth-modal .modal {
+                max-width: 100%;
+                margin: 10px;
+            }
+            .category-tabs {
+                padding: 0 12px;
+                gap: 4px;
+            }
+            .category-tabs .cat-tab {
+                font-size: 10px;
+                padding: 3px 8px;
+            }
+        }
+        @media (max-width:480px) {
+            .content-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 10px;
+            }
+            .hero-banner .hero-content h1 {
+                font-size: 22px;
+            }
+            .hero-banner .hero-content .hero-stats {
+                gap: 12px;
+            }
+            .hero-banner .hero-content .hero-stats .stat {
+                font-size: 11px;
+            }
+            .category-tabs .cat-tab {
+                font-size: 9px;
+                padding: 2px 6px;
+            }
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--netflix-text-secondary);
+            grid-column: 1 / -1;
+        }
+        .empty-state i {
+            font-size: 48px;
+            color: var(--netflix-dark);
+            margin-bottom: 12px;
+        }
+        .empty-state h3 {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        .empty-state p {
+            font-size: 14px;
+        }
+        .embeds-section.hidden-from-users {
+            display: none;
+        }
+        .admin-mode .embeds-section.hidden-from-users {
+            display: block !important;
+        }
+
+        .video-player-page {
+            display: none;
+        }
+        .video-player-page.active {
+            display: block;
+        }
+        .video-mode .public-content {
+            display: none !important;
+        }
+        .video-mode .admin-pages {
+            display: none !important;
+        }
+        .video-mode .video-player-page {
+            display: block !important;
+        }
+
+        .cat-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+
+        .pill-group {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+        .pill-group .pill {
+            font-size: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 1px 10px;
+            border-radius: 10px;
+            color: var(--netflix-text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .pill-group .pill i {
+            font-size: 9px;
+        }
+        .pill-group .pill-ratio {
+            background: rgba(229, 9, 20, 0.15);
+            color: var(--netflix-red);
+            font-weight: 600;
+        }
+
+        .fixed-ratio-badge {
+            display: inline-block;
+            background: rgba(229, 9, 20, 0.12);
+            color: var(--netflix-red);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(229, 9, 20, 0.2);
+            margin-left: 8px;
+        }
+
+        .thumb-size-badge {
+            display: inline-block;
+            background: rgba(0, 184, 148, 0.15);
+            color: #00b894;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 184, 148, 0.2);
+            margin-left: 8px;
+        }
+        /* Fix for upload description */
+        .upload-form-container .form-group textarea#uploadDescription {
+            min-height: 70px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-icon"><i class="fas fa-play"></i></span>
+                <div>
+                    <span class="brand-text">WatchMasti</span>
+                    <span class="brand-sub">Admin Panel</span>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <div class="menu-label">Management</div>
+                <button class="menu-item active" data-page="admin-dashboard" onclick="navigateAdmin('admin-dashboard')"><i class="fas fa-th-large"></i> Dashboard</button>
+                <button class="menu-item" data-page="admin-content" onclick="navigateAdmin('admin-content')"><i class="fas fa-list"></i> All Content <span class="badge-count" id="totalContentBadge">0</span></button>
+                <button class="menu-item" data-page="admin-upload" onclick="navigateAdmin('admin-upload')"><i class="fas fa-plus"></i> Upload</button>
+
+                <div class="menu-label" style="margin-top:8px;">Categories</div>
+                <button class="menu-item" data-cat="Hollywood Dubbed" onclick="filterDashboard('Hollywood Dubbed')"><i class="fas fa-film" style="color:#6c5ce7;"></i> Hollywood Dubbed <span class="cat-badge" id="catHollywood">0</span></button>
+                <button class="menu-item" data-cat="Bollywood Movies" onclick="filterDashboard('Bollywood Movies')"><i class="fas fa-film" style="color:#e50914;"></i> Bollywood Movies <span class="cat-badge" id="catBollywood">0</span></button>
+                <button class="menu-item" data-cat="Saudi Arabia Movies" onclick="filterDashboard('Saudi Arabia Movies')"><i class="fas fa-film" style="color:#0984e3;"></i> Saudi Movies <span class="cat-badge" id="catSaudiMovies">0</span></button>
+                <button class="menu-item" data-cat="Pakistan Drama" onclick="filterDashboard('Pakistan Drama')"><i class="fas fa-tv" style="color:#00b894;"></i> Pakistan Drama <span class="cat-badge" id="catPakistan">0</span></button>
+                <button class="menu-item" data-cat="Indian Drama" onclick="filterDashboard('Indian Drama')"><i class="fas fa-tv" style="color:#fdcb6e;"></i> Indian Drama <span class="cat-badge" id="catIndian">0</span></button>
+                <button class="menu-item" data-cat="Saudi Arabia Drama" onclick="filterDashboard('Saudi Arabia Drama')"><i class="fas fa-tv" style="color:#e17055;"></i> Saudi Drama <span class="cat-badge" id="catSaudiDrama">0</span></button>
+                <button class="menu-item" data-cat="Trending" onclick="filterDashboard('Trending')"><i class="fas fa-fire" style="color:#fdcb6e;"></i> Trending <span class="cat-badge" id="catTrending">0</span></button>
+                <button class="menu-item" data-cat="Trailers" onclick="filterDashboard('Trailers')"><i class="fas fa-video" style="color:#e17055;"></i> Trailers <span class="cat-badge" id="catTrailers">0</span></button>
+                <button class="menu-item" data-cat="New Upcoming Movies" onclick="filterDashboard('New Upcoming Movies')"><i class="fas fa-clock" style="color:#0984e3;"></i> New Upcoming <span class="cat-badge" id="catUpcoming">0</span></button>
+                <button class="menu-item" data-cat="Unlimited Movies" onclick="filterDashboard('Unlimited Movies')"><i class="fas fa-infinity" style="color:#fd79a8;"></i> Unlimited Movies <span class="cat-badge" id="catUnlimited">0</span></button>
+                <button class="menu-item" data-cat="Family Romance" onclick="filterDashboard('Family Romance')"><i class="fas fa-heart" style="color:#fd79a8;"></i> Family Romance <span class="cat-badge" id="catFamily">0</span></button>
+                <button class="menu-item" data-cat="Cartoon" onclick="filterDashboard('Cartoon')"><i class="fas fa-child" style="color:#fdcb6e;"></i> Cartoon <span class="cat-badge" id="catCartoon">0</span></button>
+                <button class="menu-item" data-cat="New Upcoming Cartoon" onclick="filterDashboard('New Upcoming Cartoon')"><i class="fas fa-clock" style="color:#00b894;"></i> New Cartoon <span class="cat-badge" id="catNewCartoon">0</span></button>
+
+                <div class="menu-label" style="margin-top:8px;">System</div>
+                <button class="menu-item" data-page="admin-users" onclick="navigateAdmin('admin-users')"><i class="fas fa-users"></i> Users</button>
+                <button class="menu-item" onclick="logoutUser()" style="color:var(--netflix-red);"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-card">
+                    <div class="user-avatar">A</div>
+                    <div class="user-info">
+                        <div class="name" id="sidebarUsername">Admin</div>
+                        <div class="role">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main-content" id="mainContent">
+            <!-- HEADER -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" id="sidebarToggleBtn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                    <div class="brand"><i class="fas fa-play"></i><div class="brand-ticker"><span>Watch Masti Unlimited video With jamali</span></div></div>
+                    <div class="page-title"><h2 id="pageTitle">Home</h2><p id="pageSubtitle">Watch movies & dramas</p></div>
+                </div>
+                <div class="header-right">
+                    <a href="https://wa.me/923473242485" target="_blank" class="header-btn" style="color:#25D366; font-size:20px;"><i class="fab fa-whatsapp"></i></a>
+                    <span class="admin-badge" id="adminBadge">Admin</span>
+                    <button class="header-btn" onclick="openAuthModal()" id="headerLoginBtn"><i class="fas fa-user"></i></button>
+                    <button class="header-btn" onclick="logoutUser()" id="headerLogoutBtn" style="display:none;"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </header>
+
+            <!-- PUBLIC CONTENT (Dashboard) -->
+            <div class="public-content" id="publicContent">
+                <div class="hero-banner" id="heroBanner">
+                    <div class="hero-content">
+                        <div class="hero-badge"><i class="fas fa-fire"></i> Trending Now</div>
+                        <h1>Welcome to <span>WatchMasti</span></h1>
+                        <p>Stream unlimited movies, dramas, and embedded videos for free. Enjoy the best content curated just for you.</p>
+                        <div class="hero-stats">
+                            <div class="stat"><i class="fas fa-film"></i> <strong id="heroMovies">0</strong> Movies</div>
+                            <div class="stat"><i class="fas fa-tv"></i> <strong id="heroDramas">0</strong> Dramas</div>
+                            <div class="stat"><i class="fas fa-code"></i> <strong id="heroEmbeds">0</strong> Embeds</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Filter Tabs -->
+                <div class="category-tabs" id="categoryTabs">
+                    <button class="cat-tab active" data-cat="all" onclick="filterDashboard('all')"><i class="fas fa-th-large"></i> All <span class="count" id="countAll">0</span></button>
+                    <button class="cat-tab" data-cat="Hollywood Dubbed" onclick="filterDashboard('Hollywood Dubbed')"><i class="fas fa-film" style="color:#6c5ce7;"></i> Hollywood <span class="count" id="countHollywood">0</span></button>
+                    <button class="cat-tab" data-cat="Bollywood Movies" onclick="filterDashboard('Bollywood Movies')"><i class="fas fa-film" style="color:#e50914;"></i> Bollywood <span class="count" id="countBollywood">0</span></button>
+                    <button class="cat-tab" data-cat="Saudi Arabia Movies" onclick="filterDashboard('Saudi Arabia Movies')"><i class="fas fa-film" style="color:#0984e3;"></i> Saudi Movies <span class="count" id="countSaudiMovies">0</span></button>
+                    <button class="cat-tab" data-cat="Pakistan Drama" onclick="filterDashboard('Pakistan Drama')"><i class="fas fa-tv" style="color:#00b894;"></i> Pakistan <span class="count" id="countPakistan">0</span></button>
+                    <button class="cat-tab" data-cat="Indian Drama" onclick="filterDashboard('Indian Drama')"><i class="fas fa-tv" style="color:#fdcb6e;"></i> Indian <span class="count" id="countIndian">0</span></button>
+                    <button class="cat-tab" data-cat="Saudi Arabia Drama" onclick="filterDashboard('Saudi Arabia Drama')"><i class="fas fa-tv" style="color:#e17055;"></i> Saudi Drama <span class="count" id="countSaudiDrama">0</span></button>
+                    <button class="cat-tab" data-cat="Trending" onclick="filterDashboard('Trending')"><i class="fas fa-fire" style="color:#fdcb6e;"></i> Trending <span class="count" id="countTrending">0</span></button>
+                    <button class="cat-tab" data-cat="Trailers" onclick="filterDashboard('Trailers')"><i class="fas fa-video" style="color:#e17055;"></i> Trailers <span class="count" id="countTrailers">0</span></button>
+                    <button class="cat-tab" data-cat="New Upcoming Movies" onclick="filterDashboard('New Upcoming Movies')"><i class="fas fa-clock" style="color:#0984e3;"></i> Upcoming <span class="count" id="countUpcoming">0</span></button>
+                    <button class="cat-tab" data-cat="Unlimited Movies" onclick="filterDashboard('Unlimited Movies')"><i class="fas fa-infinity" style="color:#fd79a8;"></i> Unlimited <span class="count" id="countUnlimited">0</span></button>
+                    <button class="cat-tab" data-cat="Family Romance" onclick="filterDashboard('Family Romance')"><i class="fas fa-heart" style="color:#fd79a8;"></i> Family <span class="count" id="countFamily">0</span></button>
+                    <button class="cat-tab" data-cat="Cartoon" onclick="filterDashboard('Cartoon')"><i class="fas fa-child" style="color:#fdcb6e;"></i> Cartoon <span class="count" id="countCartoon">0</span></button>
+                    <button class="cat-tab" data-cat="New Upcoming Cartoon" onclick="filterDashboard('New Upcoming Cartoon')"><i class="fas fa-clock" style="color:#00b894;"></i> New Cartoon <span class="count" id="countNewCartoon">0</span></button>
+                </div>
+
+                <div class="section-row" id="continueWatchingRow">
+                    <div class="row-header"><h3><i class="fas fa-redo-alt" style="color:#fdcb6e;"></i> Continue Watching</h3><span class="count-badge" id="continueCount">0 items</span></div>
+                    <div class="content-grid" id="continueGrid"></div>
+                </div>
+
+                <div class="section-row" id="dashboardContentRow">
+                    <div class="row-header"><h3><i class="fas fa-fire"></i> <span id="dashboardSectionTitle">All Content</span> <span class="fixed-ratio-badge"><i class="fas fa-expand"></i> 1280×720</span></h3><span class="count-badge" id="dashboardCount">0 items</span></div>
+                    <div class="content-grid" id="dashboardGrid"></div>
+                </div>
+
+                <div class="section-row embeds-section hidden-from-users" id="embedsSection">
+                    <div class="row-header"><h3><i class="fas fa-code" style="color:#17a2b8;"></i> Embeds <span class="fixed-ratio-badge"><i class="fas fa-expand"></i> 1280×720</span></h3><span class="count-badge" id="embedsCount">0 items</span></div>
+                    <div class="content-grid" id="embedsGrid"></div>
+                </div>
+            </div>
+
+            <!-- VIDEO PLAYER PAGE -->
+            <div class="video-player-page" id="videoPlayerPage">
+                <div class="back-bar">
+                    <button class="back-btn" onclick="closeVideoPage()"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+                    <span class="video-title" id="videoPageTitle">Now Playing</span>
+                </div>
+                <div class="players-grid" id="videoPlayersGrid">
+                    <div class="player-col">
+                        <div class="player-label"><i class="fas fa-play-circle"></i> Player 1 <span style="font-weight:400;color:var(--netflix-text-muted);font-size:9px;margin-left:auto;" id="vp1Badge">Primary</span></div>
+                        <div class="video-container" id="vpContainer1"></div>
+                    </div>
+                    <div class="player-col">
+                        <div class="player-label"><i class="fas fa-play-circle"></i> Player 2 <span style="font-weight:400;color:var(--netflix-text-muted);font-size:9px;margin-left:auto;" id="vp2Badge">Secondary</span></div>
+                        <div class="video-container" id="vpContainer2"></div>
+                    </div>
+                </div>
+                <div class="video-info">
+                    <h3 id="vpInfoTitle">Title</h3>
+                    <div class="meta">
+                        <span><i class="fas fa-tag"></i> <span id="vpInfoCategory">-</span></span>
+                        <span><i class="fas fa-list"></i> <span id="vpInfoGenre">-</span></span>
+                        <span><i class="fas fa-calendar"></i> <span id="vpInfoDate">-</span></span>
+                        <span><i class="fas fa-eye"></i> <span id="vpInfoViews">0</span> views</span>
+                        <span id="vpInfoDuration" style="display:none;"><i class="fas fa-clock"></i> <span id="vpInfoDurationText">0m</span></span>
+                        <span id="vpInfoFileSize" style="display:none;"><i class="fas fa-hdd"></i> <span id="vpInfoFileSizeText">0 MB</span></span>
+                        <span id="vpEmbedBadge" style="display:none; background:#17a2b8; padding:2px 12px; border-radius:3px; font-size:11px; font-weight:600;"><i class="fas fa-code"></i> EMBED</span>
+                        <span style="background:rgba(229,9,20,0.15); padding:2px 12px; border-radius:12px; font-size:10px; font-weight:600; color:var(--netflix-red); border:1px solid rgba(229,9,20,0.2);"><i class="fas fa-expand"></i> 1280×720</span>
+                    </div>
+                    <p class="description" id="vpInfoDesc">No description.</p>
+                    <div class="video-actions">
+                        <button class="btn btn-primary" id="vpDownloadBtn" onclick="downloadVideoPage()"><i class="fas fa-download"></i> Download</button>
+                        <button class="btn btn-outline" onclick="closeVideoPage()"><i class="fas fa-times"></i> Close</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN PAGES -->
+            <div class="admin-pages" id="adminPages">
+                <section id="page-admin-dashboard" class="admin-page active">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;"><h2 style="font-size:20px;font-weight:700;"><i class="fas fa-th-large" style="color:var(--netflix-red);margin-right:10px;"></i> Admin Dashboard</h2><button class="btn btn-primary btn-sm" onclick="navigateAdmin('admin-upload')"><i class="fas fa-plus"></i> Add Content</button></div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;">
+                        <div style="background:var(--netflix-card);padding:18px 20px;border-radius:var(--netflix-radius);border:1px solid var(--netflix-border);"><div style="font-size:28px;font-weight:800;color:#fff;" id="adminTotal">0</div><div style="color:var(--netflix-text-secondary);font-size:13px;">Total Content</div></div>
+                        <div style="background:var(--netflix-card);padding:18px 20px;border-radius:var(--netflix-radius);border:1px solid var(--netflix-border);"><div style="font-size:28px;font-weight:800;color:var(--netflix-red);" id="adminMovies">0</div><div style="color:var(--netflix-text-secondary);font-size:13px;">Movies</div></div>
+                        <div style="background:var(--netflix-card);padding:18px 20px;border-radius:var(--netflix-radius);border:1px solid var(--netflix-border);"><div style="font-size:28px;font-weight:800;color:#6c5ce7;" id="adminDramas">0</div><div style="color:var(--netflix-text-secondary);font-size:13px;">Dramas</div></div>
+                        <div style="background:var(--netflix-card);padding:18px 20px;border-radius:var(--netflix-radius);border:1px solid var(--netflix-border);"><div style="font-size:28px;font-weight:800;color:#17a2b8;" id="adminEmbeds">0</div><div style="color:var(--netflix-text-secondary);font-size:13px;">Embeds</div></div>
+                        <div style="background:var(--netflix-card);padding:18px 20px;border-radius:var(--netflix-radius);border:1px solid var(--netflix-border);"><div style="font-size:28px;font-weight:800;color:#fdcb6e;" id="adminUsers">0</div><div style="color:var(--netflix-text-secondary);font-size:13px;">Users</div></div>
+                    </div>
+                    <div style="background:var(--netflix-card);border-radius:var(--netflix-radius);border:1px solid var(--netflix-border);padding:20px;"><h4 style="margin-bottom:12px;">Quick Actions</h4><div style="display:flex;gap:12px;flex-wrap:wrap;"><button class="btn btn-primary" onclick="navigateAdmin('admin-upload')"><i class="fas fa-upload"></i> Upload</button><button class="btn btn-outline" onclick="navigateAdmin('admin-content')"><i class="fas fa-list"></i> Manage Content</button><button class="btn btn-outline" onclick="navigateAdmin('admin-users')"><i class="fas fa-users"></i> Users</button><a href="https://wa.me/923473242485" target="_blank" class="btn btn-success"><i class="fab fa-whatsapp"></i> Contact Admin</a></div></div>
+                </section>
+
+                <section id="page-admin-content" class="admin-page">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;"><h2 style="font-size:20px;font-weight:700;"><i class="fas fa-list" style="color:var(--netflix-red);margin-right:10px;"></i> All Content <span class="fixed-ratio-badge"><i class="fas fa-expand"></i> 1280×720</span></h2><button class="btn btn-primary btn-sm" onclick="navigateAdmin('admin-upload')"><i class="fas fa-plus"></i> Add New</button></div>
+                    <div class="content-toolbar"><div class="filter-group">
+                        <button class="filter-btn active" data-filter="all" onclick="filterContentTable('all')">All</button>
+                        <button class="filter-btn" data-filter="Hollywood Dubbed" onclick="filterContentTable('Hollywood Dubbed')">🎬 Hollywood</button>
+                        <button class="filter-btn" data-filter="Bollywood Movies" onclick="filterContentTable('Bollywood Movies')">🎬 Bollywood</button>
+                        <button class="filter-btn" data-filter="Saudi Arabia Movies" onclick="filterContentTable('Saudi Arabia Movies')">🎬 Saudi Movies</button>
+                        <button class="filter-btn" data-filter="Pakistan Drama" onclick="filterContentTable('Pakistan Drama')">📺 Pakistan</button>
+                        <button class="filter-btn" data-filter="Indian Drama" onclick="filterContentTable('Indian Drama')">📺 Indian</button>
+                        <button class="filter-btn" data-filter="Saudi Arabia Drama" onclick="filterContentTable('Saudi Arabia Drama')">📺 Saudi Drama</button>
+                        <button class="filter-btn" data-filter="Trending" onclick="filterContentTable('Trending')">🔥 Trending</button>
+                        <button class="filter-btn" data-filter="Trailers" onclick="filterContentTable('Trailers')">🎬 Trailers</button>
+                        <button class="filter-btn" data-filter="New Upcoming Movies" onclick="filterContentTable('New Upcoming Movies')">⏳ Upcoming</button>
+                        <button class="filter-btn" data-filter="Unlimited Movies" onclick="filterContentTable('Unlimited Movies')">♾️ Unlimited</button>
+                        <button class="filter-btn" data-filter="Family Romance" onclick="filterContentTable('Family Romance')">❤️ Family</button>
+                        <button class="filter-btn" data-filter="Cartoon" onclick="filterContentTable('Cartoon')">🧸 Cartoon</button>
+                        <button class="filter-btn" data-filter="New Upcoming Cartoon" onclick="filterContentTable('New Upcoming Cartoon')">⏳ New Cartoon</button>
+                    </div><div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="Search content..." id="contentSearch" oninput="filterContentTable()"></div></div>
+                    <div class="table-wrap"><table><thead><tr><th>Content</th><th>Category</th><th>Genre</th><th>Duration</th><th>Size</th><th>Views</th><th>Date</th><th style="text-align:right;">Actions</th></tr></thead><tbody id="contentTableBody"></tbody></table></div>
+                </section>
+
+                <section id="page-admin-upload" class="admin-page">
+                    <h2 style="font-size:20px;font-weight:700;margin-bottom:16px;"><i class="fas fa-upload" style="color:var(--netflix-red);margin-right:10px;"></i> Upload New Content <span class="thumb-size-badge"><i class="fas fa-image"></i> 720×474</span></h2>
+                    <div class="upload-form-container">
+                        <form id="uploadForm" onsubmit="handleUpload(event)">
+                            <div class="form-row">
+                                <div class="form-group"><label>Title <span class="required">*</span></label><input type="text" id="uploadTitle" placeholder="Enter title..." required></div>
+                                <div class="form-group"><label>Category <span class="required">*</span></label>
+                                    <select id="uploadCategory" required>
+                                        <option value="Hollywood Dubbed">🎬 Hollywood Dubbed</option>
+                                        <option value="Bollywood Movies">🎬 Bollywood Movies</option>
+                                        <option value="Saudi Arabia Movies">🎬 Saudi Arabia Movies</option>
+                                        <option value="Pakistan Drama">📺 Pakistan Drama</option>
+                                        <option value="Indian Drama">📺 Indian Drama</option>
+                                        <option value="Saudi Arabia Drama">📺 Saudi Arabia Drama</option>
+                                        <option value="Trending">🔥 Trending</option>
+                                        <option value="Trailers">🎬 Trailers</option>
+                                        <option value="New Upcoming Movies">⏳ New Upcoming Movies</option>
+                                        <option value="Unlimited Movies">♾️ Unlimited Movies</option>
+                                        <option value="Family Romance">❤️ Family Romance</option>
+                                        <option value="Cartoon">🧸 Cartoon</option>
+                                        <option value="New Upcoming Cartoon">⏳ New Upcoming Cartoon</option>
+                                    </select>
+                                    <div class="form-hint"><i class="fas fa-info-circle"></i> Select the content category. This will appear in the dashboard filter.</div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Genre <span class="required">*</span></label><select id="uploadGenre" required><option value="action">Action</option><option value="comedy">Comedy</option><option value="drama">Drama</option><option value="horror">Horror</option><option value="sci-fi">Sci-Fi</option><option value="romance">Romance</option><option value="thriller">Thriller</option><option value="historical">Historical</option><option value="family">Family</option><option value="animation">Animation</option><option value="adventure">Adventure</option></select></div>
+                                <div class="form-group"><label>Thumbnail <span class="thumb-size-badge" style="font-weight:400;font-size:9px;padding:1px 8px;margin-left:4px;">720×474</span></label>
+                                    <div class="thumbnail-upload-area" id="thumbUploadArea">
+                                        <div class="preview" id="thumbPreview"><img id="thumbPreviewImg" src="" alt="Thumbnail preview"></div>
+                                        <div class="placeholder" id="thumbPlaceholder"><i class="fas fa-image"></i><span>Click to upload an image</span><span style="font-size:11px;color:var(--netflix-text-muted);">or paste a URL below</span></div>
+                                        <input type="file" id="thumbFileInput" accept="image/*" style="display:none;">
+                                        <div class="thumb-actions">
+                                            <button type="button" class="btn-upload-thumb" onclick="document.getElementById('thumbFileInput').click()"><i class="fas fa-upload"></i> Choose Image</button>
+                                            <button type="button" class="remove-thumb" id="removeThumbBtn" style="display:none;" onclick="clearThumbnail()"><i class="fas fa-times"></i> Remove</button>
+                                        </div>
+                                        <div class="thumb-url-input"><input type="url" id="uploadThumbnail" placeholder="Or enter image URL..."></div>
+                                        <div class="image-size-info" id="imageSizeInfo"><i class="fas fa-info-circle"></i> Recommended: <strong>720×474</strong> (3:2). Max 5MB.</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FIX: Added Description field -->
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea id="uploadDescription" placeholder="Write a short description about this content..." rows="3"></textarea>
+                                <div class="form-hint"><i class="fas fa-info-circle"></i> A brief description of the content (optional but recommended).</div>
+                            </div>
+
+                            <div class="form-hint" style="margin-bottom:16px; background:rgba(229,9,20,0.05); padding:10px 14px; border-radius:6px; border-left:3px solid var(--netflix-red);">
+                                <i class="fas fa-info-circle" style="color:var(--netflix-red);"></i>
+                                <strong style="color:#fff;">Fixed Video Ratio:</strong>
+                                <span style="color:var(--netflix-text-secondary);"> All videos are displayed in <strong style="color:var(--netflix-red);">1280×720 (16:9)</strong>.</span>
+                                <span style="color:var(--netflix-text-muted);font-size:12px;display:block;margin-top:4px;"><i class="fas fa-image" style="color:#00b894;"></i> Thumbnails use <strong style="color:#00b894;">720×474 (3:2)</strong> — upload images in this size for best results.</span>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group"><label>Duration (minutes) <span class="required">*</span></label><input type="number" id="uploadDuration" placeholder="e.g. 120" min="1" step="0.5" required><div class="form-hint"><i class="fas fa-clock"></i> Enter the total runtime in minutes.</div></div>
+                                <div class="form-group"><label>File Size (MB) <span class="required">*</span></label><input type="number" id="uploadFileSize" placeholder="e.g. 850" min="1" step="0.1" required><div class="form-hint"><i class="fas fa-hdd"></i> Enter the file size in megabytes.</div></div>
+                            </div>
+
+                            <div class="form-divider"><i class="fas fa-video" style="color:var(--netflix-red);"></i> Video Sources (Player 1 &amp; 2)</div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Video URL 1 <span class="required">*</span></label><input type="url" id="uploadVideo1" placeholder="https://example.com/video1.mp4 or YouTube embed URL..." required><div class="form-hint"><i class="fas fa-info-circle"></i> Primary video source (MP4, WebM, OGG, or YouTube/Vimeo embed URL)</div></div>
+                                <div class="form-group"><label>Video URL 2</label><input type="url" id="uploadVideo2" placeholder="https://example.com/video2.mp4 (optional)"><div class="form-hint"><i class="fas fa-info-circle"></i> Secondary video source (backup / alternate)</div></div>
+                            </div>
+
+                            <div class="form-divider"><i class="fas fa-code" style="color:#17a2b8;"></i> Embed Codes (Player 1 &amp; 2)</div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Embed Code 1</label><textarea id="uploadEmbed1" placeholder="Paste full embed HTML for player 1 (Streamable, OK.ru, Dailymotion, etc.)..." rows="3" style="font-family:monospace;font-size:13px;"></textarea><div class="form-hint"><i class="fas fa-info-circle"></i> If provided, this overrides Video URL 1.</div></div>
+                                <div class="form-group"><label>Embed Code 2</label><textarea id="uploadEmbed2" placeholder="Paste full embed HTML for player 2 (optional)..." rows="3" style="font-family:monospace;font-size:13px;"></textarea><div class="form-hint"><i class="fas fa-info-circle"></i> If provided, this overrides Video URL 2.</div></div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block" style="padding:14px;font-size:15px;"><i class="fas fa-cloud-upload-alt"></i> Upload Content</button>
+                        </form>
+                    </div>
+                </section>
+
+                <section id="page-admin-movies" class="admin-page"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;"><h2 style="font-size:20px;font-weight:700;"><i class="fas fa-film" style="color:var(--netflix-red);margin-right:10px;"></i> Movies <span class="fixed-ratio-badge"><i class="fas fa-expand"></i> 1280×720</span></h2><button class="btn btn-primary btn-sm" onclick="navigateAdmin('admin-upload')"><i class="fas fa-plus"></i> Add Movie</button></div><div class="table-wrap"><table><thead><tr><th>Content</th><th>Category</th><th>Genre</th><th>Duration</th><th>Size</th><th>Views</th><th>Date</th><th style="text-align:right;">Actions</th></tr></thead><tbody id="moviesTableBody"></tbody></table></div></section>
+                <section id="page-admin-dramas" class="admin-page"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;"><h2 style="font-size:20px;font-weight:700;"><i class="fas fa-tv" style="color:#6c5ce7;margin-right:10px;"></i> Dramas <span class="fixed-ratio-badge"><i class="fas fa-expand"></i> 1280×720</span></h2><button class="btn btn-primary btn-sm" onclick="navigateAdmin('admin-upload')"><i class="fas fa-plus"></i> Add Drama</button></div><div class="table-wrap"><table><thead><tr><th>Content</th><th>Category</th><th>Genre</th><th>Duration</th><th>Size</th><th>Views</th><th>Date</th><th style="text-align:right;">Actions</th></tr></thead><tbody id="dramasTableBody"></tbody></table></div></section>
+                <section id="page-admin-embeds" class="admin-page"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;"><h2 style="font-size:20px;font-weight:700;"><i class="fas fa-code" style="color:#17a2b8;margin-right:10px;"></i> Embeds <span class="fixed-ratio-badge"><i class="fas fa-expand"></i> 1280×720</span></h2><button class="btn btn-primary btn-sm" onclick="navigateAdmin('admin-upload')"><i class="fas fa-plus"></i> Add Embed</button></div><div class="table-wrap"><table><thead><tr><th>Content</th><th>Category</th><th>Genre</th><th>Duration</th><th>Size</th><th>Views</th><th>Date</th><th style="text-align:right;">Actions</th></tr></thead><tbody id="embedsTableBody"></tbody></table></div></section>
+                <section id="page-admin-users" class="admin-page"><h2 style="font-size:20px;font-weight:700;margin-bottom:16px;"><i class="fas fa-users" style="color:#fdcb6e;margin-right:10px;"></i> Users</h2><div class="table-wrap"><table><thead><tr><th>Username</th><th>Role</th><th>Joined</th><th style="text-align:right;">Actions</th></tr></thead><tbody id="usersTableBody"></tbody></table></div></section>
+            </div>
+        </main>
+    </div>
+
+    <!-- AUTH MODAL -->
+    <div class="modal-overlay auth-modal" id="authModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-shield-alt" style="color:var(--netflix-red);margin-right:8px;"></i> Admin Login</h2>
+                <button class="close-btn" onclick="closeAuthModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:var(--netflix-text-secondary);font-size:14px;margin-bottom:16px;">Enter admin password to manage content</p>
+                <div class="auth-error" id="authError">Invalid password</div>
+                <form id="authForm" onsubmit="handleAuth(event)">
+                    <div class="form-group"><label>Password</label><input type="password" id="authPassword" placeholder="Enter password..." required></div>
+                    <button type="submit" class="btn btn-primary btn-block" style="padding:12px;"><i class="fas fa-sign-in-alt"></i> Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOASTS -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script type="module">
+        import 'https://cdn.jsdelivr.net/npm/@vidstack/player@1.11.0/dist/index.js';
+        import 'https://cdn.jsdelivr.net/npm/@vidstack/hls@1.11.0/dist/index.js';
+    </script>
+
+    <script>
+        // ===== ALL CATEGORIES LIST =====
+        const ALL_CATEGORIES = [
+            'Hollywood Dubbed',
+            'Bollywood Movies',
+            'Saudi Arabia Movies',
+            'Pakistan Drama',
+            'Indian Drama',
+            'Saudi Arabia Drama',
+            'Trending',
+            'Trailers',
+            'New Upcoming Movies',
+            'Unlimited Movies',
+            'Family Romance',
+            'Cartoon',
+            'New Upcoming Cartoon'
+        ];
+
+        // ===== RANDOM HERO IMAGE =====
+        function setRandomHeroImage() {
+            const heroImages = [
+                "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1200&h=600&fit=crop",
+                "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=1200&h=600&fit=crop",
+                "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&h=600&fit=crop",
+                "https://images.unsplash.com/photo-1535016120720-40c646be5580?w=1200&h=600&fit=crop",
+                "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&h=600&fit=crop",
+                "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200&h=600&fit=crop",
+                "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1200&h=600&fit=crop",
+                "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=1200&h=600&fit=crop",
+                "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=1200&h=600&fit=crop"
+            ];
+            const randomIndex = Math.floor(Math.random() * heroImages.length);
+            const hero = document.getElementById('heroBanner');
+            if (hero) hero.style.backgroundImage = `linear-gradient(135deg, rgba(20,20,20,0.95) 0%, rgba(229,9,20,0.3) 100%), url('${heroImages[randomIndex]}')`;
+        }
+
+        // ===== DATA LAYER =====
+        const STORAGE_KEY = 'watchmasti_data';
+
+        function getDefaultData() {
+            return {
+                movies: [
+                    { id: 'm1', title: 'The Dark Knight', category: 'Hollywood Dubbed', genre: 'action', description: 'When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.', videoUrl1: 'https://www.w3schools.com/html/mov_bbb.mp4', videoUrl2: '', embed1: '', embed2: '', thumbnail: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&h=225&fit=crop', uploadDate: '2025-06-10', views: 1523, duration: 152, fileSize: 1200 },
+                    { id: 'm2', title: 'Inception', category: 'Hollywood Dubbed', genre: 'sci-fi', description: 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.', videoUrl1: 'https://www.w3schools.com/html/mov_bbb.mp4', videoUrl2: '', embed1: '', embed2: '', thumbnail: 'https://images.unsplash.com/photo-1535016120720-40c646be5580?w=400&h=225&fit=crop', uploadDate: '2025-06-08', views: 987, duration: 148, fileSize: 980 },
+                    { id: 'm3', title: 'The Matrix', category: 'Hollywood Dubbed', genre: 'sci-fi', description: 'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.', videoUrl1: 'https://www.w3schools.com/html/mov_bbb.mp4', videoUrl2: '', embed1: '', embed2: '', thumbnail: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=225&fit=crop', uploadDate: '2025-06-05', views: 2341, duration: 136, fileSize: 850 },
+                    { id: 'm4', title: 'The Hangover', category: 'Bollywood Movies', genre: 'comedy', description: 'Three buddies wake up from a bachelor party in Las Vegas with no memory of the previous night and the bachelor missing.', videoUrl1: 'https://www.w3schools.com/html/mov_bbb.mp4', videoUrl2: '', embed1: '', embed2: '', thumbnail: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=400&h=225&fit=crop', uploadDate: '2025-06-01', views: 876, duration: 100, fileSize: 620 }
+                ],
+                dramas: [
+                    { id: 'd1', title: 'The Crown', category: 'Pakistan Drama', genre: 'historical', description: 'Follows the political rivalries and romance of Queen Elizabeth II\'s reign and the events that shaped the second half of the twentieth century.', videoUrl1: 'https://www.w3schools.com/html/mov_bbb.mp4', videoUrl2: '', embed1: '', embed2: '', thumbnail: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=225&fit=crop', uploadDate: '2025-06-12', views: 654, duration: 60, fileSize: 400 },
+                    { id: 'd2', title: 'Stranger Things', category: 'Indian Drama', genre: 'thriller', description: 'When a young boy disappears, his mother, a police chief, and his friends must confront terrifying supernatural forces in order to get him back.', videoUrl1: 'https://www.w3schools.com/html/mov_bbb.mp4', videoUrl2: '', embed1: '', embed2: '', thumbnail: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&h=225&fit=crop', uploadDate: '2025-06-09', views: 1432, duration: 75, fileSize: 510 },
+                    { id: 'd3', title: 'This Is Us', category: 'Family Romance', genre: 'family', description: 'The heartwarming and emotional story of a unique family through multiple generations, exploring how the past shapes the present.', videoUrl1: 'https://www.w3schools.com/html/mov_bbb.mp4', videoUrl2: '', embed1: '', embed2: '', thumbnail: 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=400&h=225&fit=crop', uploadDate: '2025-06-03', views: 543, duration: 45, fileSize: 320 }
+                ],
+                embeds: [
+                    { id: 'e1', title: 'Streamable Embed Demo', category: 'Trailers', genre: 'comedy', description: 'This is an embedded video from Streamable. Use the fullscreen button for best experience.', videoUrl1: '', videoUrl2: '', embed1: '<div style="position:relative;width:100%;height:0px;padding-bottom:100.000%"><iframe allowfullscreen height="100%" src="https://streamable.com/e/gy2ghp?" width="100%" style="border:none;width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;"></iframe></div>', embed2: '', thumbnail: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400&h=225&fit=crop', uploadDate: '2025-06-15', views: 432, duration: 12, fileSize: 15 }
+                ],
+                users: [{ username: 'admin', password: 'Muhammadjaffar123@@@1', isAdmin: true, joinDate: '2025-01-01' }],
+                nextId: 100
+            };
+        }
+
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    if (!data.movies) data.movies = [];
+                    if (!data.dramas) data.dramas = [];
+                    if (!data.embeds) data.embeds = [];
+                    if (!data.users) data.users = [];
+                    if (!data.nextId) data.nextId = 100;
+                    [...data.movies, ...data.dramas, ...data.embeds].forEach(item => {
+                        if (item.duration === undefined) item.duration = 60;
+                        if (item.fileSize === undefined) item.fileSize = 500;
+                        item.aspectRatio = '16:9';
+                        if (!item.description) item.description = '';
+                    });
+                    const admin = data.users.find(u => u.username === 'admin');
+                    if (admin) admin.password = 'Muhammadjaffar123@@@1';
+                    else data.users.push({ username: 'admin', password: 'Muhammadjaffar123@@@1', isAdmin: true, joinDate: '2025-01-01' });
+                    return data;
+                }
+            } catch (e) { console.warn('Failed to load data, using defaults.'); }
+            const def = getDefaultData();
+            saveData(def);
+            return def;
+        }
+
+        function saveData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+        let DB = loadData();
+        let currentUser = null;
+        let watchingItem = null;
+        let currentContentFilter = 'all';
+        let dashboardCategoryFilter = 'all';
+
+        function generateId() { return ++DB.nextId; }
+
+        function formatDate(d) { const date = new Date(d); return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }); }
+
+        function getCategoryBadge(category) {
+            const map = {
+                'Hollywood Dubbed': 'badge-hollywood',
+                'Bollywood Movies': 'badge-bollywood',
+                'Saudi Arabia Movies': 'badge-saudi-movies',
+                'Pakistan Drama': 'badge-pakistan',
+                'Indian Drama': 'badge-indian',
+                'Saudi Arabia Drama': 'badge-saudi-drama',
+                'Trending': 'badge-trending',
+                'Trailers': 'badge-trailer',
+                'New Upcoming Movies': 'badge-upcoming',
+                'Unlimited Movies': 'badge-unlimited',
+                'Family Romance': 'badge-family',
+                'Cartoon': 'badge-cartoon',
+                'New Upcoming Cartoon': 'badge-upcoming'
+            };
+            return map[category] || 'badge-movie';
+        }
+
+        function getCategoryIcon(category) {
+            const map = {
+                'Hollywood Dubbed': '🎬',
+                'Bollywood Movies': '🎬',
+                'Saudi Arabia Movies': '🎬',
+                'Pakistan Drama': '📺',
+                'Indian Drama': '📺',
+                'Saudi Arabia Drama': '📺',
+                'Trending': '🔥',
+                'Trailers': '🎬',
+                'New Upcoming Movies': '⏳',
+                'Unlimited Movies': '♾️',
+                'Family Romance': '❤️',
+                'Cartoon': '🧸',
+                'New Upcoming Cartoon': '⏳'
+            };
+            return map[category] || '📽️';
+        }
+
+        function getAllContent() { return [...DB.movies, ...DB.dramas, ...DB.embeds]; }
+
+        function getContentById(id) { return getAllContent().find(c => c.id === id); }
+
+        function getMovieCount() { return DB.movies.length; }
+
+        function getDramaCount() { return DB.dramas.length; }
+
+        function getEmbedCount() { return DB.embeds.length; }
+
+        function getUserCount() { return DB.users.length; }
+
+        function getCountByCategory(cat) {
+            return getAllContent().filter(c => c.category === cat).length;
+        }
+
+        function isAdmin() { return currentUser && currentUser.isAdmin === true; }
+
+        function isLoggedIn() { return currentUser !== null; }
+
+        function isEmbedContent(item) { return item && (item.category === 'embed'); }
+
+        function hasEmbedCode(item, idx) {
+            if (!item) return false;
+            if (idx === 1) return item.embed1 && item.embed1.trim().length > 0;
+            if (idx === 2) return item.embed2 && item.embed2.trim().length > 0;
+            return (item.embed1 && item.embed1.trim().length > 0) || (item.embed2 && item.embed2.trim().length > 0);
+        }
+
+        function getResumeKey(id) { return 'watchmasti_resume_' + id; }
+
+        function formatDuration(minutes) {
+            if (!minutes || minutes < 0) return '0m';
+            const mins = Math.floor(minutes);
+            const hrs = Math.floor(mins / 60);
+            const remainMins = mins % 60;
+            if (hrs > 0) return `${hrs}h ${remainMins}m`;
+            return `${mins}m`;
+        }
+
+        function formatFileSize(mb) {
+            if (!mb || mb < 0) return '0 MB';
+            if (mb >= 1024) return (mb / 1024).toFixed(1) + ' GB';
+            return Math.round(mb) + ' MB';
+        }
+
+        // ===== THUMBNAIL UPLOAD =====
+        let selectedThumbnailData = null;
+
+        function setupThumbnailUpload() {
+            const fileInput = document.getElementById('thumbFileInput');
+            const preview = document.getElementById('thumbPreview');
+            const previewImg = document.getElementById('thumbPreviewImg');
+            const placeholder = document.getElementById('thumbPlaceholder');
+            const removeBtn = document.getElementById('removeThumbBtn');
+            const urlInput = document.getElementById('uploadThumbnail');
+            const sizeInfo = document.getElementById('imageSizeInfo');
+
+            function validateImageDimensions(fileOrUrl, isFile = true) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    if (isFile) {
+                        const reader = new FileReader();
+                        reader.onload = function(ev) { img.src = ev.target.result; };
+                        reader.readAsDataURL(fileOrUrl);
+                    } else {
+                        img.src = fileOrUrl;
+                    }
+                    img.onload = function() {
+                        const w = img.width,
+                            h = img.height;
+                        const isGood = (w >= 640 && h >= 360) && (w <= 4096 && h <= 4096);
+                        const isIdeal = (w >= 700 && h >= 460) && (w <= 740 && h <= 490);
+                        let msg = isIdeal ? `✅ ${w}×${h} – Perfect! (720×474 recommended)` :
+                            isGood ? `✅ ${w}×${h} – Acceptable (720×474 recommended)` :
+                            `⚠️ ${w}×${h} – Please use at least 640×360.`;
+                        sizeInfo.textContent = msg;
+                        sizeInfo.className = 'image-size-info ' + (isGood ? 'success' : 'error');
+                        resolve(isGood);
+                    };
+                    img.onerror = function() {
+                        sizeInfo.textContent = '⚠️ Could not load image. Please try another URL.';
+                        sizeInfo.className = 'image-size-info error';
+                        resolve(false);
+                    };
+                });
+            }
+
+            fileInput.addEventListener('change', async function(e) {
+                const file = this.files[0];
+                if (!file) return;
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('Image is too large. Max 5MB allowed.', 'error');
+                    this.value = '';
+                    return;
+                }
+                const valid = await validateImageDimensions(file, true);
+                if (!valid) {
+                    showToast('Image dimensions are too small. Use at least 640×360.', 'error');
+                    this.value = '';
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const dataUrl = ev.target.result;
+                    selectedThumbnailData = dataUrl;
+                    previewImg.src = dataUrl;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    removeBtn.style.display = 'inline-flex';
+                    urlInput.value = '';
+                    showToast('Image uploaded successfully!', 'success');
+                };
+                reader.readAsDataURL(file);
+            });
+
+            urlInput.addEventListener('input', async function() {
+                const val = this.value.trim();
+                if (val) {
+                    const valid = await validateImageDimensions(val, false);
+                    if (!valid) {
+                        showToast('Invalid image URL or dimensions too small.', 'error');
+                        return;
+                    }
+                    selectedThumbnailData = val;
+                    previewImg.src = val;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    removeBtn.style.display = 'inline-flex';
+                    fileInput.value = '';
+                    showToast('Image loaded from URL!', 'success');
+                } else {
+                    if (!fileInput.files || !fileInput.files[0]) { clearThumbnail(); }
+                }
+            });
+
+            document.getElementById('thumbUploadArea').addEventListener('click', function(e) {
+                if (e.target.closest('button') || e.target.closest('input')) return;
+                fileInput.click();
+            });
+        }
+
+        function clearThumbnail() {
+            selectedThumbnailData = null;
+            document.getElementById('thumbPreview').style.display = 'none';
+            document.getElementById('thumbPlaceholder').style.display = 'flex';
+            document.getElementById('removeThumbBtn').style.display = 'none';
+            document.getElementById('thumbFileInput').value = '';
+            document.getElementById('uploadThumbnail').value = '';
+            document.getElementById('imageSizeInfo').textContent = '📐 Recommended: 720×474 (3:2). Max 5MB.';
+            document.getElementById('imageSizeInfo').className = 'image-size-info';
+        }
+
+        // ===== TOASTS =====
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const icons = { success: 'fas fa-check-circle', error: 'fas fa-exclamation-circle', info: 'fas fa-info-circle' };
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="${icons[type] || icons.info}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(30px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // ===== ADMIN MODE =====
+        function enterAdminMode() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('mainContent').classList.add('shifted');
+            document.getElementById('adminPages').classList.add('active');
+            document.getElementById('publicContent').style.display = 'none';
+            document.getElementById('adminBadge').style.display = 'inline-block';
+            document.getElementById('headerLoginBtn').style.display = 'none';
+            document.getElementById('headerLogoutBtn').style.display = 'flex';
+            document.querySelector('.app-container').classList.add('admin-mode');
+            document.getElementById('embedsSection').classList.remove('hidden-from-users');
+            const toggleBtn = document.getElementById('sidebarToggleBtn');
+            if (toggleBtn) toggleBtn.style.display = 'flex';
+            navigateAdmin('admin-dashboard');
+            updateUI();
+        }
+
+        function exitAdminMode() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('mainContent').classList.remove('shifted');
+            document.getElementById('adminPages').classList.remove('active');
+            document.getElementById('publicContent').style.display = 'block';
+            document.getElementById('adminBadge').style.display = 'none';
+            document.getElementById('headerLoginBtn').style.display = 'flex';
+            document.getElementById('headerLogoutBtn').style.display = 'none';
+            document.querySelector('.app-container').classList.remove('admin-mode');
+            document.getElementById('embedsSection').classList.add('hidden-from-users');
+            const toggleBtn = document.getElementById('sidebarToggleBtn');
+            if (toggleBtn) toggleBtn.style.display = 'none';
+            renderPublicDashboard();
+            updateUI();
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+        function navigateAdmin(page) {
+            document.querySelectorAll('.sidebar-menu .menu-item').forEach(el => el.classList.toggle('active', el.dataset.page === page));
+            document.querySelectorAll('.admin-page').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById(`page-${page}`);
+            if (target) target.classList.add('active');
+            if (page === 'admin-dashboard') renderAdminDashboard();
+            if (page === 'admin-content') renderContentTable();
+            if (page === 'admin-movies') renderMoviesTable();
+            if (page === 'admin-dramas') renderDramasTable();
+            if (page === 'admin-embeds') renderEmbedsTable();
+            if (page === 'admin-users') renderUsersTable();
+            const titles = { 'admin-dashboard': 'Dashboard', 'admin-content': 'All Content', 'admin-upload': 'Upload', 'admin-movies': 'Movies', 'admin-dramas': 'Dramas', 'admin-embeds': 'Embeds', 'admin-users': 'Users' };
+            document.getElementById('pageTitle').textContent = titles[page] || 'Admin';
+            document.getElementById('pageSubtitle').textContent = 'Admin panel';
+        }
+
+        const FIXED_RATIO_PADDING = '56.25%';
+
+        // ===== DASHBOARD CATEGORY FILTER =====
+        function filterDashboard(category) {
+            dashboardCategoryFilter = category;
+            document.querySelectorAll('.category-tabs .cat-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.cat === category);
+            });
+            document.querySelectorAll('.sidebar-menu .menu-item[data-cat]').forEach(el => {
+                el.classList.toggle('active', el.dataset.cat === category);
+            });
+            renderDashboardContent();
+        }
+
+        function renderDashboardContent() {
+            let items = getAllContent();
+            const filter = dashboardCategoryFilter;
+            if (filter !== 'all') items = items.filter(c => c.category === filter);
+
+            items.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+
+            const titleMap = {
+                'all': 'All Content',
+                'Hollywood Dubbed': '🎬 Hollywood Dubbed',
+                'Bollywood Movies': '🎬 Bollywood Movies',
+                'Saudi Arabia Movies': '🎬 Saudi Arabia Movies',
+                'Pakistan Drama': '📺 Pakistan Drama',
+                'Indian Drama': '📺 Indian Drama',
+                'Saudi Arabia Drama': '📺 Saudi Arabia Drama',
+                'Trending': '🔥 Trending',
+                'Trailers': '🎬 Trailers',
+                'New Upcoming Movies': '⏳ New Upcoming Movies',
+                'Unlimited Movies': '♾️ Unlimited Movies',
+                'Family Romance': '❤️ Family Romance',
+                'Cartoon': '🧸 Cartoon',
+                'New Upcoming Cartoon': '⏳ New Upcoming Cartoon'
+            };
+            document.getElementById('dashboardSectionTitle').textContent = titleMap[filter] || 'All Content';
+            document.getElementById('dashboardCount').textContent = items.length + ' items';
+
+            const container = document.getElementById('dashboardGrid');
+            if (items.length === 0) {
+                container.innerHTML =
+                    `<div class="empty-state"><i class="fas fa-plus-circle"></i><h3>No content in this category</h3><p>Upload some content to get started.</p></div>`;
+                return;
+            }
+
+            const isAdminMode = isLoggedIn() && isAdmin();
+            container.innerHTML = items.map(item => {
+                const displayTitle = item.title && item.title.trim() ? item.title : 'Untitled Content';
+                const thumb = item.thumbnail || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop';
+                const badgeClass = getCategoryBadge(item.category || 'movie');
+                const embedBadgeHtml = isEmbedContent(item) ? `<span class="card-embed-badge"><i class="fas fa-code"></i> EMBED</span>` : '';
+                const dur = formatDuration(item.duration);
+                const size = formatFileSize(item.fileSize);
+                const adminActionsHtml = isAdminMode ?
+                    `<div class="card-admin-actions"><button class="admin-btn edit" onclick="event.stopPropagation(); openVideoPage('${item.id}')" title="Watch"><i class="fas fa-play"></i></button><button class="admin-btn delete" onclick="event.stopPropagation(); deleteContent('${item.id}')" title="Delete"><i class="fas fa-trash"></i></button></div>` :
+                    '';
+                const cardActionsHtml = isAdminMode ?
+                    `<div class="card-actions"><button class="btn btn-primary btn-xs" onclick="event.stopPropagation(); openVideoPage('${item.id}')"><i class="fas fa-play"></i> Watch</button><button class="btn btn-danger btn-xs" onclick="event.stopPropagation(); deleteContent('${item.id}')"><i class="fas fa-trash"></i></button></div>` :
+                    '';
+                return `<div class="movie-card" onclick="openVideoPage('${item.id}')"><div class="card-thumb" style="aspect-ratio:16/9;"><img src="${thumb}" alt="${displayTitle}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop'"><div class="play-overlay"><i class="fas fa-play-circle"></i></div><span class="card-badge badge ${badgeClass}">${getCategoryIcon(item.category || 'movie')} ${item.category || 'Content'}</span>${embedBadgeHtml}<span class="card-duration"><i class="fas fa-eye"></i> ${item.views || 0}</span>${adminActionsHtml}</div><div class="card-body"><h4>${displayTitle}</h4><div class="card-meta"><span><i class="fas fa-tag"></i> ${item.genre || 'N/A'}</span><span><i class="fas fa-calendar"></i> ${formatDate(item.uploadDate)}</span></div><div class="pill-group"><span class="pill"><i class="fas fa-clock"></i> ${dur}</span><span class="pill"><i class="fas fa-hdd"></i> ${size}</span><span class="pill pill-ratio"><i class="fas fa-expand"></i> 1280×720</span></div></div>${cardActionsHtml}</div>`;
+            }).join('');
+        }
+
+        // ===== RENDER PUBLIC DASHBOARD =====
+        function renderPublicDashboard() {
+            const all = getAllContent();
+            const movies = getMovieCount(),
+                dramas = getDramaCount(),
+                embeds = getEmbedCount();
+            document.getElementById('heroMovies').textContent = movies;
+            document.getElementById('heroDramas').textContent = dramas;
+            document.getElementById('heroEmbeds').textContent = embeds;
+
+            ALL_CATEGORIES.forEach(cat => {
+                const count = getCountByCategory(cat);
+                const countEl = document.getElementById('count' + cat.replace(/\s/g, ''));
+                if (countEl) countEl.textContent = count;
+                const sidebarCount = document.getElementById('cat' + cat.replace(/\s/g, ''));
+                if (sidebarCount) sidebarCount.textContent = count;
+            });
+            const countAll = document.getElementById('countAll');
+            if (countAll) countAll.textContent = all.length;
+
+            renderContinueWatching();
+            renderDashboardContent();
+
+            const sortedEmbeds = [...DB.embeds].sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+            renderGrid('embedsGrid', sortedEmbeds, 'embedsCount');
+        }
+
+        function renderGrid(containerId, items, countId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            if (countId) { document.getElementById(countId).textContent = items.length + ' items'; }
+            if (items.length === 0) { container.innerHTML =
+                    `<div class="empty-state"><i class="fas fa-plus-circle"></i><h3>No content available</h3><p>Upload some content to get started.</p></div>`; return; }
+            const isAdminMode = isLoggedIn() && isAdmin();
+            container.innerHTML = items.map(item => {
+                const displayTitle = item.title && item.title.trim() ? item.title : 'Untitled Content';
+                const thumb = item.thumbnail || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop';
+                const badgeClass = getCategoryBadge(item.category || 'movie');
+                const embedBadgeHtml = isEmbedContent(item) ? `<span class="card-embed-badge"><i class="fas fa-code"></i> EMBED</span>` : '';
+                const dur = formatDuration(item.duration);
+                const size = formatFileSize(item.fileSize);
+                const adminActionsHtml = isAdminMode ?
+                    `<div class="card-admin-actions"><button class="admin-btn edit" onclick="event.stopPropagation(); openVideoPage('${item.id}')" title="Watch"><i class="fas fa-play"></i></button><button class="admin-btn delete" onclick="event.stopPropagation(); deleteContent('${item.id}')" title="Delete"><i class="fas fa-trash"></i></button></div>` :
+                    '';
+                const cardActionsHtml = isAdminMode ?
+                    `<div class="card-actions"><button class="btn btn-primary btn-xs" onclick="event.stopPropagation(); openVideoPage('${item.id}')"><i class="fas fa-play"></i> Watch</button><button class="btn btn-danger btn-xs" onclick="event.stopPropagation(); deleteContent('${item.id}')"><i class="fas fa-trash"></i></button></div>` :
+                    '';
+                return `<div class="movie-card" onclick="openVideoPage('${item.id}')"><div class="card-thumb" style="aspect-ratio:16/9;"><img src="${thumb}" alt="${displayTitle}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop'"><div class="play-overlay"><i class="fas fa-play-circle"></i></div><span class="card-badge badge ${badgeClass}">${getCategoryIcon(item.category || 'movie')} ${item.category || 'Content'}</span>${embedBadgeHtml}<span class="card-duration"><i class="fas fa-eye"></i> ${item.views || 0}</span>${adminActionsHtml}</div><div class="card-body"><h4>${displayTitle}</h4><div class="card-meta"><span><i class="fas fa-tag"></i> ${item.genre || 'N/A'}</span><span><i class="fas fa-calendar"></i> ${formatDate(item.uploadDate)}</span></div><div class="pill-group"><span class="pill"><i class="fas fa-clock"></i> ${dur}</span><span class="pill"><i class="fas fa-hdd"></i> ${size}</span><span class="pill pill-ratio"><i class="fas fa-expand"></i> 1280×720</span></div></div>${cardActionsHtml}</div>`;
+            }).join('');
+        }
+
+        function renderContinueWatching() {
+            const container = document.getElementById('continueGrid');
+            const countEl = document.getElementById('continueCount');
+            const all = getAllContent();
+            const continueItems = all.filter(item => {
+                const key = getResumeKey(item.id);
+                const saved = localStorage.getItem(key);
+                if (!saved) return false;
+                const time = parseFloat(saved);
+                return time > 5;
+            });
+            countEl.textContent = continueItems.length + ' items';
+            if (continueItems.length === 0) { document.getElementById('continueWatchingRow').style.display = 'none'; return; }
+            document.getElementById('continueWatchingRow').style.display = 'block';
+            const isAdminMode = isLoggedIn() && isAdmin();
+            container.innerHTML = continueItems.map(item => {
+                const displayTitle = item.title && item.title.trim() ? item.title : 'Untitled Content';
+                const thumb = item.thumbnail || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop';
+                const badgeClass = getCategoryBadge(item.category || 'movie');
+                const key = getResumeKey(item.id);
+                const savedTime = parseFloat(localStorage.getItem(key) || '0');
+                const progressPercent = Math.min(100, (savedTime / ((item.duration || 60) * 60)) * 100);
+                const dur = formatDuration(item.duration);
+                const size = formatFileSize(item.fileSize);
+                const adminActionsHtml = isAdminMode ?
+                    `<div class="card-admin-actions"><button class="admin-btn edit" onclick="event.stopPropagation(); openVideoPage('${item.id}')" title="Watch"><i class="fas fa-play"></i></button><button class="admin-btn delete" onclick="event.stopPropagation(); deleteContent('${item.id}')" title="Delete"><i class="fas fa-trash"></i></button></div>` :
+                    '';
+                return `<div class="movie-card" onclick="openVideoPage('${item.id}')"><div class="card-thumb" style="aspect-ratio:16/9;"><img src="${thumb}" alt="${displayTitle}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop'"><div class="play-overlay"><i class="fas fa-play-circle"></i></div><span class="card-badge badge ${badgeClass}">${getCategoryIcon(item.category || 'movie')} ${item.category || 'Content'}</span><span class="card-duration"><i class="fas fa-redo-alt"></i> Continue</span>${adminActionsHtml}<div class="progress-bar"><div class="fill" style="width:${progressPercent}%;"></div></div></div><div class="card-body"><h4>${displayTitle}</h4><div class="card-meta"><span><i class="fas fa-tag"></i> ${item.genre || 'N/A'}</span><span><i class="fas fa-calendar"></i> ${formatDate(item.uploadDate)}</span></div><div class="pill-group"><span class="pill"><i class="fas fa-clock"></i> ${dur}</span><span class="pill"><i class="fas fa-hdd"></i> ${size}</span><span class="pill pill-ratio"><i class="fas fa-expand"></i> 1280×720</span></div></div></div>`;
+            }).join('');
+        }
+
+        // ===== ADMIN RENDER FUNCTIONS =====
+        function renderAdminDashboard() {
+            const total = getAllContent().length,
+                movies = getMovieCount(),
+                dramas = getDramaCount(),
+                embeds = getEmbedCount(),
+                users = getUserCount();
+            document.getElementById('adminTotal').textContent = total;
+            document.getElementById('adminMovies').textContent = movies;
+            document.getElementById('adminDramas').textContent = dramas;
+            document.getElementById('adminEmbeds').textContent = embeds;
+            document.getElementById('adminUsers').textContent = users;
+            document.getElementById('totalContentBadge').textContent = total;
+        }
+
+        function renderContentTable() {
+            let all = getAllContent();
+            const filter = currentContentFilter;
+            if (filter !== 'all') all = all.filter(c => c.category === filter);
+            const search = document.getElementById('contentSearch')?.value?.toLowerCase()?.trim() || '';
+            if (search) all = all.filter(c => c.title.toLowerCase().includes(search) || c.genre.toLowerCase().includes(search) || (c.description && c.description
+                .toLowerCase().includes(search)));
+            all.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+            const tbody = document.getElementById('contentTableBody');
+            if (all.length === 0) { tbody.innerHTML =
+                    `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--netflix-text-muted);">No content found</td></tr>`; return; }
+            tbody.innerHTML = all.map(item => {
+                const displayTitle = item.title && item.title.trim() ? item.title : 'Untitled';
+                const dur = formatDuration(item.duration);
+                const size = formatFileSize(item.fileSize);
+                return `<tr><td><div class="content-cell"><img class="thumb" src="${item.thumbnail || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop'}" alt="${displayTitle}" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop'"><span class="title">${displayTitle}</span></div></td><td><span class="badge ${getCategoryBadge(item.category)}">${item.category}</span></td><td>${item.genre || 'N/A'}</td><td>${dur}</td><td>${size}</td><td>${item.views || 0}</td><td>${formatDate(item.uploadDate)}</td><td style="text-align:right;"><button class="btn btn-xs btn-primary" onclick="openVideoPage('${item.id}')" style="margin-right:4px;"><i class="fas fa-play"></i></button><button class="btn btn-xs btn-danger" onclick="deleteContent('${item.id}')"><i class="fas fa-trash"></i></button></td></tr>`;
+            }).join('');
+        }
+
+        function filterContentTable(filter) { if (filter) { currentContentFilter = filter;
+                document.querySelectorAll('.content-toolbar .filter-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.filter ===
+                filter)); } renderContentTable(); }
+
+        function renderMoviesTable() {
+            const movies = [...DB.movies].sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+            const tbody = document.getElementById('moviesTableBody');
+            if (movies.length === 0) { tbody.innerHTML =
+                    `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--netflix-text-muted);">No movies uploaded</td></tr>`; return; }
+            tbody.innerHTML = movies.map(item => {
+                const dur = formatDuration(item.duration);
+                const size = formatFileSize(item.fileSize);
+                return `<tr><td><div class="content-cell"><img class="thumb" src="${item.thumbnail || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop'}" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop'"><span class="title">${item.title || 'Untitled'}</span></div></td><td><span class="badge ${getCategoryBadge(item.category)}">${item.category}</span></td><td>${item.genre || 'N/A'}</td><td>${dur}</td><td>${size}</td><td>${item.views || 0}</td><td>${formatDate(item.uploadDate)}</td><td style="text-align:right;"><button class="btn btn-xs btn-primary" onclick="openVideoPage('${item.id}')" style="margin-right:4px;"><i class="fas fa-play"></i></button><button class="btn btn-xs btn-danger" onclick="deleteContent('${item.id}')"><i class="fas fa-trash"></i></button></td></tr>`;
+            }).join('');
+        }
+
+        function renderDramasTable() {
+            const dramas = [...DB.dramas].sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+            const tbody = document.getElementById('dramasTableBody');
+            if (dramas.length === 0) { tbody.innerHTML =
+                    `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--netflix-text-muted);">No dramas uploaded</td></tr>`; return; }
+            tbody.innerHTML = dramas.map(item => {
+                const dur = formatDuration(item.duration);
+                const size = formatFileSize(item.fileSize);
+                return `<tr><td><div class="content-cell"><img class="thumb" src="${item.thumbnail || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop'}" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop'"><span class="title">${item.title || 'Untitled'}</span></div></td><td><span class="badge ${getCategoryBadge(item.category)}">${item.category}</span></td><td>${item.genre || 'N/A'}</td><td>${dur}</td><td>${size}</td><td>${item.views || 0}</td><td>${formatDate(item.uploadDate)}</td><td style="text-align:right;"><button class="btn btn-xs btn-primary" onclick="openVideoPage('${item.id}')" style="margin-right:4px;"><i class="fas fa-play"></i></button><button class="btn btn-xs btn-danger" onclick="deleteContent('${item.id}')"><i class="fas fa-trash"></i></button></td></tr>`;
+            }).join('');
+        }
+
+        function renderEmbedsTable() {
+            const embeds = [...DB.embeds].sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+            const tbody = document.getElementById('embedsTableBody');
+            if (embeds.length === 0) { tbody.innerHTML =
+                    `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--netflix-text-muted);">No embeds uploaded</td></tr>`; return; }
+            tbody.innerHTML = embeds.map(item => {
+                const dur = formatDuration(item.duration);
+                const size = formatFileSize(item.fileSize);
+                return `<tr><td><div class="content-cell"><img class="thumb" src="${item.thumbnail || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop'}" onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop'"><span class="title">${item.title || 'Embed Content'} ${hasEmbedCode(item,1) ? '<span style="color:#17a2b8;font-size:10px;">📝 HTML</span>' : ''}</span></div></td><td><span class="badge ${getCategoryBadge(item.category)}">${item.category}</span></td><td>${item.genre || 'N/A'}</td><td>${dur}</td><td>${size}</td><td>${item.views || 0}</td><td>${formatDate(item.uploadDate)}</td><td style="text-align:right;"><button class="btn btn-xs btn-primary" onclick="openVideoPage('${item.id}')" style="margin-right:4px;"><i class="fas fa-play"></i></button><button class="btn btn-xs btn-danger" onclick="deleteContent('${item.id}')"><i class="fas fa-trash"></i></button></td></tr>`;
+            }).join('');
+        }
+
+        function renderUsersTable() {
+            const users = [...DB.users];
+            const tbody = document.getElementById('usersTableBody');
+            if (users.length === 0) { tbody.innerHTML =
+                    `<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--netflix-text-muted);">No users</td></tr>`; return; }
+            tbody.innerHTML = users.map(u =>
+                `<tr><td><strong>${u.username}</strong></td><td>${u.isAdmin ? '<span class="badge badge-movie">👑 Admin</span>' : '<span class="badge" style="background:var(--netflix-dark);color:var(--netflix-text-secondary);">User</span>'}</td><td>${formatDate(u.joinDate)}</td><td style="text-align:right;">${u.username !== 'admin' ? `<button class="btn btn-xs btn-danger" onclick="deleteUser('${u.username}')"><i class="fas fa-user-minus"></i></button>` : ''}</td></tr>`
+            ).join('');
+        }
+
+        // ===== OPEN VIDEO PAGE =====
+        function openVideoPage(id) {
+            const item = getContentById(id);
+            if (!item) { showToast('Content not found.', 'error'); return; }
+            watchingItem = item;
+
+            if (item.category === 'movie') { const m = DB.movies.find(m => m.id === id); if (m) m.views = (m.views || 0) + 1; } else if (item
+                .category === 'drama') { const d = DB.dramas.find(d => d.id === id); if (d) d.views = (d.views || 0) + 1; } else if (item
+                .category === 'embed') { const e = DB.embeds.find(e => e.id === id); if (e) e.views = (e.views || 0) + 1; }
+            saveData(DB);
+
+            const displayTitle = item.title && item.title.trim() ? item.title : 'Untitled Content';
+
+            document.getElementById('videoPageTitle').textContent = `▶ ${displayTitle}`;
+            document.getElementById('vpInfoTitle').textContent = displayTitle;
+            document.getElementById('vpInfoCategory').textContent = getCategoryIcon(item.category) + ' ' + (item.category ? item
+                .category.charAt(0).toUpperCase() + item.category.slice(1) : 'Content');
+            document.getElementById('vpInfoGenre').textContent = item.genre ? item.genre.charAt(0).toUpperCase() + item.genre.slice(
+                1) : 'N/A';
+            document.getElementById('vpInfoDate').textContent = formatDate(item.uploadDate);
+            document.getElementById('vpInfoViews').textContent = item.views || 0;
+            document.getElementById('vpInfoDesc').textContent = item.description || 'No description available.';
+
+            if (item.duration) {
+                document.getElementById('vpInfoDuration').style.display = 'inline-flex';
+                document.getElementById('vpInfoDurationText').textContent = formatDuration(item.duration);
+            } else {
+                document.getElementById('vpInfoDuration').style.display = 'none';
+            }
+            if (item.fileSize) {
+                document.getElementById('vpInfoFileSize').style.display = 'inline-flex';
+                document.getElementById('vpInfoFileSizeText').textContent = formatFileSize(item.fileSize);
+            } else {
+                document.getElementById('vpInfoFileSize').style.display = 'none';
+            }
+
+            document.getElementById('vpEmbedBadge').style.display = isEmbedContent(item) ? 'inline-block' : 'none';
+
+            const downloadBtn = document.getElementById('vpDownloadBtn');
+            downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download';
+            downloadBtn.onclick = () => downloadContent(item.id);
+
+            const c1 = document.getElementById('vpContainer1');
+            const c2 = document.getElementById('vpContainer2');
+            c1.innerHTML = '';
+            c2.innerHTML = '';
+            c1.style.aspectRatio = '16/9';
+            c2.style.aspectRatio = '16/9';
+
+            renderPlayerInPage(c1, item, 1);
+            renderPlayerInPage(c2, item, 2);
+
+            document.getElementById('vp1Badge').textContent = hasEmbedCode(item, 1) ? 'Embed' : (item.videoUrl1 ? 'Video' : 'None');
+            document.getElementById('vp2Badge').textContent = hasEmbedCode(item, 2) ? 'Embed' : (item.videoUrl2 ? 'Video' : 'None');
+
+            document.querySelector('.app-container').classList.add('video-mode');
+            document.getElementById('videoPlayerPage').classList.add('active');
+
+            document.getElementById('pageTitle').textContent = 'Now Playing';
+            document.getElementById('pageSubtitle').textContent = '';
+
+            updateUI();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderPlayerInPage(container, item, playerIdx) {
+            const embedKey = playerIdx === 1 ? 'embed1' : 'embed2';
+            const videoKey = playerIdx === 1 ? 'videoUrl1' : 'videoUrl2';
+            const embedCode = item[embedKey] || '';
+            const videoUrl = item[videoKey] || '';
+
+            container.style.aspectRatio = '16/9';
+
+            if (embedCode && embedCode.trim().length > 0) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'embed-wrapper';
+                wrapper.style.width = '100%';
+                wrapper.style.height = '100%';
+                wrapper.style.display = 'flex';
+                wrapper.style.alignItems = 'center';
+                wrapper.style.justifyContent = 'center';
+                wrapper.style.background = '#0a0a0a';
+
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = embedCode;
+                const iframe = tempDiv.querySelector('iframe');
+                if (iframe) {
+                    let src = iframe.getAttribute('src') || '';
+                    if (src.startsWith('//')) src = 'https:' + src;
+                    const newIframe = document.createElement('iframe');
+                    newIframe.src = src;
+                    newIframe.style.width = '100%';
+                    newIframe.style.height = '100%';
+                    newIframe.style.border = 'none';
+                    newIframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; accelerometer; gyroscope; picture-in-picture');
+                    newIframe.setAttribute('allowfullscreen', 'true');
+                    wrapper.appendChild(newIframe);
+                    container.appendChild(wrapper);
+                    return;
+                } else {
+                    wrapper.innerHTML = embedCode;
+                    wrapper.querySelectorAll('iframe').forEach(el => {
+                        let s = el.getAttribute('src');
+                        if (s && s.startsWith('//')) el.src = 'https:' + s;
+                        el.style.width = '100%';
+                        el.style.height = '100%';
+                        el.style.border = 'none';
+                        el.setAttribute('allow', 'autoplay; encrypted-media; fullscreen');
+                        el.setAttribute('allowfullscreen', 'true');
+                    });
+                    container.appendChild(wrapper);
+                    return;
+                }
+            }
+
+            if (videoUrl && videoUrl.trim().length > 0) {
+                const url = videoUrl.trim();
+                const isYouTube = url.includes('youtube.com/embed') || url.includes('youtu.be') || url.includes('youtube.com/watch');
+                const isVimeo = url.includes('vimeo.com');
+                const isDailymotion = url.includes('dailymotion.com');
+                const isEmbedUrl = isYouTube || isVimeo || isDailymotion || url.includes('player.') || url.includes('embed') || url
+                .includes('iframe');
+
+                if (url.match(/\.(mp4|webm|ogg|mov|m3u8)$/i) || url.includes('manifest') || url.includes('.m3u8')) {
+                    const type = url.match(/\.m3u8$/i) ? 'application/vnd.apple.mpegurl' : 'video/mp4';
+                    const poster = item.thumbnail || '';
+                    const playerHTML =
+                        `<media-player controls autoplay><media-provider src="${url}" type="${type}"></media-provider><media-poster src="${poster}"></media-poster><media-controls><media-play-button></media-play-button><media-time-display></media-time-display><media-time-slider></media-time-slider><media-volume-slider></media-volume-slider><media-settings-menu><media-quality-menu><media-quality-menu-items></media-quality-menu-items></media-quality-menu><media-speed-menu><media-speed-menu-items></media-speed-menu-items></media-speed-menu><media-audio-menu><media-audio-menu-items></media-audio-menu-items></media-audio-menu><media-captions-menu><media-captions-menu-items></media-captions-menu-items></media-captions-menu></media-settings-menu><media-fullscreen-button></media-fullscreen-button><media-pip-button></media-pip-button><media-theater-button></media-theater-button><media-google-cast-button></media-google-cast-button><media-airplay-button></media-airplay-button></media-controls></media-player>`;
+                    container.innerHTML = playerHTML;
+                    const savedTime = localStorage.getItem(getResumeKey(item.id));
+                    if (savedTime) {
+                        const player = container.querySelector('media-player');
+                        const checkReady = setInterval(() => {
+                            if (player && player.currentTime !== undefined) {
+                                player.currentTime = parseFloat(savedTime);
+                                clearInterval(checkReady);
+                            }
+                        }, 100);
+                    }
+                    const player = container.querySelector('media-player');
+                    if (player) {
+                        player.addEventListener('time-update', () => {
+                            localStorage.setItem(getResumeKey(item.id), player.currentTime);
+                        });
+                    }
+                    return;
+                } else if (isEmbedUrl) {
+                    let embedUrl = url;
+                    if (url.includes('watch?v=')) { const vid = url.split('v=')[1]?.split('&')[0]; if (vid) embedUrl =
+                            `https://www.youtube.com/embed/${vid}`; } else if (url.includes('youtu.be/')) { const vid = url
+                            .split('youtu.be/')[1]?.split('?')[0]; if (vid) embedUrl = `https://www.youtube.com/embed/${vid}`; } else if (
+                        url.includes('vimeo.com/') && !url.includes('player.vimeo.com')) { const vid = url.split('vimeo.com/')[
+                            1]?.split('/')[0]; if (vid) embedUrl = `https://player.vimeo.com/video/${vid}`; }
+                    const iframe = document.createElement('iframe');
+                    iframe.src = embedUrl;
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100%';
+                    iframe.style.border = 'none';
+                    iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen');
+                    iframe.setAttribute('allowfullscreen', 'true');
+                    container.appendChild(iframe);
+                    return;
+                } else {
+                    const video = document.createElement('video');
+                    video.src = url;
+                    video.controls = true;
+                    video.autoplay = true;
+                    video.style.width = '100%';
+                    video.style.height = '100%';
+                    video.style.background = '#000';
+                    container.appendChild(video);
+                    video.play().catch(() => {});
+                    return;
+                }
+            }
+
+            container.innerHTML =
+                `<div class="no-source"><i class="fas fa-video-slash"></i><span>No source for Player ${playerIdx}</span><span style="font-size:11px;color:var(--netflix-text-muted);">Add a video URL or embed code</span></div>`;
+        }
+
+        function closeVideoPage() {
+            document.querySelector('.app-container').classList.remove('video-mode');
+            document.getElementById('videoPlayerPage').classList.remove('active');
+            document.getElementById('vpContainer1').innerHTML = '';
+            document.getElementById('vpContainer2').innerHTML = '';
+            document.getElementById('vpContainer1').style.aspectRatio = '16/9';
+            document.getElementById('vpContainer2').style.aspectRatio = '16/9';
+            watchingItem = null;
+            document.getElementById('pageTitle').textContent = 'Home';
+            document.getElementById('pageSubtitle').textContent = 'Watch movies & dramas';
+            renderPublicDashboard();
+            updateUI();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== DOWNLOAD =====
+        function downloadContent(id) {
+            const item = getContentById(id);
+            if (!item) { showToast('Content not found.', 'error'); return; }
+            const url = item.videoUrl1 || item.videoUrl2 || '';
+            if (url.match(/\.(mp4|webm|ogg|mov|m3u8)$/i)) {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${item.title || 'video'}.mp4`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                showToast(`Downloading "${item.title}"...`, 'success');
+            } else if (url) {
+                window.open(url, '_blank');
+                showToast(`Opening "${item.title}"...`, 'info');
+            } else if (hasEmbedCode(item, 1) || hasEmbedCode(item, 2)) {
+                const code = hasEmbedCode(item, 1) ? item.embed1 : item.embed2;
+                const temp = document.createElement('div');
+                temp.innerHTML = code;
+                const iframe = temp.querySelector('iframe');
+                if (iframe) {
+                    const src = iframe.getAttribute('src');
+                    if (src) { window.open(src, '_blank');
+                        showToast('Opening embed source...', 'info'); } else { showToast('No embed source found.', 'error'); }
+                } else { showToast('No embed source found.', 'error'); }
+            } else {
+                showToast('No downloadable source available.', 'error');
+            }
+        }
+
+        function downloadVideoPage() { if (watchingItem) { downloadContent(watchingItem.id); } }
+
+        // ===== UPLOAD HANDLER - FIXED =====
+        function handleUpload(e) {
+            e.preventDefault();
+            if (!isLoggedIn() || !isAdmin()) { showToast('You must be admin to upload.', 'error'); return; }
+
+            // Get form values
+            const title = document.getElementById('uploadTitle').value.trim();
+            const category = document.getElementById('uploadCategory').value;
+            const genre = document.getElementById('uploadGenre').value;
+            const videoUrl1 = document.getElementById('uploadVideo1').value.trim();
+            const videoUrl2 = document.getElementById('uploadVideo2').value.trim();
+            const embed1 = document.getElementById('uploadEmbed1').value.trim();
+            const embed2 = document.getElementById('uploadEmbed2').value.trim();
+            const descriptionEl = document.getElementById('uploadDescription');
+            const description = descriptionEl ? descriptionEl.value.trim() : '';
+            const duration = parseFloat(document.getElementById('uploadDuration').value) || 60;
+            const fileSize = parseFloat(document.getElementById('uploadFileSize').value) || 500;
+
+            let thumbnail = selectedThumbnailData || '';
+            if (!thumbnail) {
+                const urlInput = document.getElementById('uploadThumbnail');
+                if (urlInput.value.trim()) { thumbnail = urlInput.value.trim(); }
+            }
+
+            // Validate
+            if (!title) { showToast('Title is required.', 'error'); return; }
+            if (!videoUrl1 && !embed1) { showToast('Please provide at least Video URL 1 or Embed Code 1.', 'error'); return; }
+            if (duration < 1) { showToast('Duration must be at least 1 minute.', 'error'); return; }
+            if (fileSize < 1) { showToast('File size must be at least 1 MB.', 'error'); return; }
+
+            // Create new item
+            const newItem = {
+                id: `u${generateId()}`,
+                title,
+                category,
+                genre,
+                aspectRatio: '16:9',
+                description: description || 'No description.',
+                videoUrl1: videoUrl1 || '',
+                videoUrl2: videoUrl2 || '',
+                embed1: embed1 || '',
+                embed2: embed2 || '',
+                thumbnail: thumbnail || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=225&fit=crop',
+                uploadDate: new Date().toISOString().split('T')[0],
+                views: 0,
+                duration: duration,
+                fileSize: fileSize
+            };
+
+            // Category mapping
+            const movieCats = ['Hollywood Dubbed', 'Bollywood Movies', 'Saudi Arabia Movies', 'New Upcoming Movies',
+                'Unlimited Movies', 'Family Romance', 'Cartoon', 'New Upcoming Cartoon', 'Trending', 'Trailers'
+            ];
+            const dramaCats = ['Pakistan Drama', 'Indian Drama', 'Saudi Arabia Drama'];
+
+            // Push to correct array
+            if (movieCats.includes(category)) {
+                DB.movies.push(newItem);
+            } else if (dramaCats.includes(category)) {
+                DB.dramas.push(newItem);
+            } else {
+                DB.movies.push(newItem);
+            }
+
+            // Save to localStorage
+            saveData(DB);
+
+            showToast(`"${title}" uploaded! 🎬 Video: 1280×720 | Thumbnail: 720×474`, 'success');
+
+            // Reset form
+            document.getElementById('uploadForm').reset();
+            document.getElementById('uploadDescription').value = '';
+            document.getElementById('uploadEmbed1').value = '';
+            document.getElementById('uploadEmbed2').value = '';
+            document.getElementById('uploadVideo2').value = '';
+            document.getElementById('uploadDuration').value = '';
+            document.getElementById('uploadFileSize').value = '';
+            clearThumbnail();
+
+            // Reset filter to 'all' so new content appears
+            currentContentFilter = 'all';
+            document.querySelectorAll('.content-toolbar .filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === 'all');
+            });
+            const searchInput = document.getElementById('contentSearch');
+            if (searchInput) searchInput.value = '';
+
+            updateUI();
+            navigateAdmin('admin-content');
+
+            setTimeout(() => {
+                renderContentTable();
+                renderPublicDashboard();
+            }, 50);
+        }
+
+        // ===== DELETE - FIXED: find item by ID across arrays =====
+        function deleteContent(id) {
+            if (!isAdmin()) { showToast('Only admins can delete content.', 'error'); return; }
+            if (!confirm('Are you sure you want to delete this content? This action cannot be undone.')) return;
+
+            // Find and remove from the correct array using findIndex
+            let found = false;
+            const movieIdx = DB.movies.findIndex(m => m.id === id);
+            if (movieIdx !== -1) {
+                DB.movies.splice(movieIdx, 1);
+                found = true;
+            }
+            if (!found) {
+                const dramaIdx = DB.dramas.findIndex(d => d.id === id);
+                if (dramaIdx !== -1) {
+                    DB.dramas.splice(dramaIdx, 1);
+                    found = true;
+                }
+            }
+            if (!found) {
+                const embedIdx = DB.embeds.findIndex(e => e.id === id);
+                if (embedIdx !== -1) {
+                    DB.embeds.splice(embedIdx, 1);
+                    found = true;
+                }
+            }
+
+            if (!found) { showToast('Content not found.', 'error'); return; }
+
+            // Save and reload
+            saveData(DB);
+            DB = loadData();  // force reload from storage
+
+            // Reset filters to show all content
+            currentContentFilter = 'all';
+            dashboardCategoryFilter = 'all';
+
+            // Update UI
+            updateUI();
+            const activePage = document.querySelector('.sidebar-menu .menu-item.active')?.dataset?.page || 'admin-dashboard';
+            navigateAdmin(activePage);
+            renderPublicDashboard();
+
+            showToast(`Content deleted permanently.`, 'info');
+            localStorage.removeItem(getResumeKey(id));
+        }
+
+        function deleteUser(username) {
+            if (!isAdmin()) return;
+            if (username === 'admin') { showToast('Cannot delete the master admin.', 'error'); return; }
+            if (!confirm(`Delete user "${username}"?`)) return;
+            DB.users = DB.users.filter(u => u.username !== username);
+            saveData(DB);
+            showToast(`User "${username}" deleted.`, 'info');
+            renderUsersTable();
+            updateUI();
+        }
+
+        // ===== AUTH =====
+        function openAuthModal() { document.getElementById('authModal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('authError').classList.remove('show');
+            document.getElementById('authPassword').value = ''; }
+
+        function closeAuthModal() { document.getElementById('authModal').classList.remove('open');
+            document.body.style.overflow = ''; }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const password = document.getElementById('authPassword').value.trim();
+            if (!password) { showToast('Please enter password.', 'error'); return; }
+            if (password !== 'Muhammadjaffar123@@@1') {
+                document.getElementById('authError').textContent = 'Invalid admin password.';
+                document.getElementById('authError').classList.add('show');
+                return;
+            }
+            const adminUser = DB.users.find(u => u.username === 'admin');
+            if (!adminUser) { DB.users.push({ username: 'admin', password: 'Muhammadjaffar123@@@1', isAdmin: true,
+                    joinDate: '2025-01-01' });
+                saveData(DB); }
+            currentUser = DB.users.find(u => u.username === 'admin');
+            showToast('Welcome, Admin! 🎬', 'success');
+            closeAuthModal();
+            enterAdminMode();
+            updateUI();
+        }
+
+        function logoutUser() {
+            if (!isLoggedIn()) return;
+            const name = currentUser.username;
+            currentUser = null;
+            showToast(`Goodbye, ${name}!`, 'info');
+            exitAdminMode();
+            updateUI();
+        }
+
+        // ===== UI UPDATE =====
+        function updateUI() {
+            const loggedIn = isLoggedIn();
+            const admin = isAdmin();
+            const toggleBtn = document.getElementById('sidebarToggleBtn');
+            if (loggedIn && admin) document.getElementById('sidebarUsername').textContent = currentUser.username;
+            else document.getElementById('sidebarUsername').textContent = 'Guest';
+            if (loggedIn && admin) {
+                document.getElementById('headerLoginBtn').style.display = 'none';
+                document.getElementById('headerLogoutBtn').style.display = 'flex';
+                document.getElementById('adminBadge').style.display = 'inline-block';
+                if (toggleBtn) toggleBtn.style.display = 'flex';
+            } else {
+                document.getElementById('headerLoginBtn').style.display = 'flex';
+                document.getElementById('headerLogoutBtn').style.display = 'none';
+                document.getElementById('adminBadge').style.display = 'none';
+                if (toggleBtn) toggleBtn.style.display = 'none';
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('mainContent').classList.remove('shifted');
+            }
+            const total = getAllContent().length;
+            document.getElementById('totalContentBadge').textContent = total;
+            if (document.getElementById('publicContent').style.display !== 'none') {
+                document.getElementById('heroMovies').textContent = getMovieCount();
+                document.getElementById('heroDramas').textContent = getDramaCount();
+                document.getElementById('heroEmbeds').textContent = getEmbedCount();
+            }
+            if (document.getElementById('adminPages').classList.contains('active')) renderAdminDashboard();
+            ALL_CATEGORIES.forEach(cat => {
+                const count = getCountByCategory(cat);
+                const el = document.getElementById('cat' + cat.replace(/\s/g, ''));
+                if (el) el.textContent = count;
+            });
+        }
+
+        // ===== INIT =====
+        function init() {
+            DB = loadData();
+            setupThumbnailUpload();
+            setRandomHeroImage();
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (document.querySelector('.app-container').classList.contains('video-mode')) {
+                        closeVideoPage();
+                    }
+                    closeAuthModal();
+                }
+            });
+
+            if (!navigator.onLine) showToast('⚠️ No internet connection. Please connect to watch online.', 'error');
+            window.addEventListener('online', () => showToast('🌐 Internet connected!', 'success'));
+            window.addEventListener('offline', () => showToast('⚠️ Internet disconnected. Some features may not work.', 'error'));
+
+            exitAdminMode();
+            renderPublicDashboard();
+            updateUI();
+            console.log('🚀 WatchMasti loaded — Video: 1280×720 | Thumbnail: 720×474 | Upload & Delete fixes applied');
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) { DB = loadData();
+                updateUI(); if (document.getElementById('adminPages').classList.contains('active')) { const activePage = document
+                        .querySelector('.sidebar-menu .menu-item.active')?.dataset?.page || 'admin-dashboard';
+                    navigateAdmin(activePage); } else if (!document.querySelector('.app-container').classList.contains(
+                    'video-mode')) { renderPublicDashboard(); } }
+        });
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) document.getElementById('sidebar').classList.remove('open');
+        });
+    </script>
+</body>
+</html>
